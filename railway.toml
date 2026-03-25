@@ -1,0 +1,15 @@
+[build]
+buildCommand = "pnpm install --frozen-lockfile && pnpm --filter api build"
+watchPatterns = [
+  "apps/api/**",
+  "packages/**",
+  "pnpm-lock.yaml",
+  "package.json",
+  "pnpm-workspace.yaml",
+]
+
+[deploy]
+preDeployCommand = ["pnpm --filter api db:migrate:prod"]
+startCommand = "pnpm --filter api start"
+healthcheckPath = "/health"
+restartPolicyType = "ON_FAILURE"

@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "import/no-unassigned-import": [
+      "error",
+      {
+        "allow": ["**/instrument.js"]
+      }
+    ]
+  }
+}

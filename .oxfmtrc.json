@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "trailingComma": "all",
+  "printWidth": 100,
+  "singleQuote": true,
+  "experimentalSortImports": {
+    "newlinesBetween": false
+  },
+  "ignorePatterns": ["dist/**", "node_modules/**"],
+  "overrides": [
+    {
+      "files": ["**/*.json", "**/*.jsonc"],
+      "options": {
+        "trailingComma": "none"
+      }
+    }
+  ],
+  "sortTailwindcss": {
+    "stylesheet": "./apps/web/src/index.css",
+    "functions": ["clsx", "cn", "cva"]
+  }
+}

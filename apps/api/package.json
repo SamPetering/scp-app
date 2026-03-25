@@ -1,0 +1,45 @@
+{
+  "name": "@scp-app/api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "pnpm clean && pnpm tsgo && echo 'Build Complete'",
+    "start": "node dist/server.js",
+    "dev": "tsx watch --env-file=.env src/server.ts",
+    "lint": "oxlint -A no-unused-vars ./src",
+    "fmt": "oxfmt ./src --write",
+    "fmt:check": "oxfmt ./src --check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "pnpm lint && pnpm fmt:check && pnpm build && pnpm test",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:migrate:prod": "node dist/db/migrate.js"
+  },
+  "dependencies": {
+    "@clerk/fastify": "^3.1.2",
+    "@fastify/autoload": "^6.3.1",
+    "@fastify/cors": "^11.2.0",
+    "@fastify/rate-limit": "^10.3.0",
+    "@fastify/sensible": "^6.0.4",
+    "@neondatabase/serverless": "^1.0.2",
+    "@scp-app/shared": "workspace:*",
+    "@sentry/node": "^10.43.0",
+    "drizzle-kit": "^0.31.9",
+    "drizzle-orm": "^0.45.1",
+    "fastify": "^5.8.2",
+    "fastify-plugin": "^5.1.0",
+    "fastify-type-provider-zod": "^6.1.0",
+    "svix": "^1.88.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@typescript/native-preview": "7.0.0-dev.20260314.1",
+    "tsx": "^4.21.0",
+    "vitest": "^4.1.0"
+  }
+}
