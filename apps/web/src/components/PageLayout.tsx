@@ -1,0 +1,11 @@
+import { cn } from '@/lib/utils';
+
+export function PageLayout({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return <div className={cn('flex flex-1 flex-col', className)}>{children}</div>;
+}

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as SplatRouteImport } from './routes/$'
@@ -18,6 +19,11 @@ import { Route as ProtectedAdminRouteImport } from './routes/_protected/_admin'
 import { Route as ProtectedAdminAdminIndexRouteImport } from './routes/_protected/_admin/admin.index'
 import { Route as ProtectedAdminAdminUsersRouteImport } from './routes/_protected/_admin/admin.users'
 
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/privacy': typeof PrivacyRoute
   '/me': typeof ProtectedMeRoute
   '/admin/users': typeof ProtectedAdminAdminUsersRoute
   '/admin/': typeof ProtectedAdminAdminIndexRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/privacy': typeof PrivacyRoute
   '/me': typeof ProtectedMeRoute
   '/admin/users': typeof ProtectedAdminAdminUsersRoute
   '/admin': typeof ProtectedAdminAdminIndexRoute
@@ -81,6 +89,7 @@ export interface FileRoutesById {
   '/$': typeof SplatRoute
   '/_protected': typeof ProtectedRouteWithChildren
   '/about': typeof AboutRoute
+  '/privacy': typeof PrivacyRoute
   '/_protected/_admin': typeof ProtectedAdminRouteWithChildren
   '/_protected/me': typeof ProtectedMeRoute
   '/_protected/_admin/admin/users': typeof ProtectedAdminAdminUsersRoute
@@ -88,15 +97,23 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$' | '/about' | '/me' | '/admin/users' | '/admin/'
+  fullPaths:
+    | '/'
+    | '/$'
+    | '/about'
+    | '/privacy'
+    | '/me'
+    | '/admin/users'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$' | '/about' | '/me' | '/admin/users' | '/admin'
+  to: '/' | '/$' | '/about' | '/privacy' | '/me' | '/admin/users' | '/admin'
   id:
     | '__root__'
     | '/'
     | '/$'
     | '/_protected'
     | '/about'
+    | '/privacy'
     | '/_protected/_admin'
     | '/_protected/me'
     | '/_protected/_admin/admin/users'
@@ -108,10 +125,18 @@ export interface RootRouteChildren {
   SplatRoute: typeof SplatRoute
   ProtectedRoute: typeof ProtectedRouteWithChildren
   AboutRoute: typeof AboutRoute
+  PrivacyRoute: typeof PrivacyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -204,6 +229,7 @@ const rootRouteChildren: RootRouteChildren = {
   SplatRoute: SplatRoute,
   ProtectedRoute: ProtectedRouteWithChildren,
   AboutRoute: AboutRoute,
+  PrivacyRoute: PrivacyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

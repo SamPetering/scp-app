@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { PageLayout } from '@/components/PageLayout';
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -6,8 +7,8 @@ export const Route = createFileRoute('/')({
 
 function Index() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <PageLayout className="items-center justify-center">
       <h1 className="text-4xl font-bold">scp-app</h1>
-    </div>
+    </PageLayout>
   );
 }

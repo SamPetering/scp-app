@@ -1,7 +1,7 @@
 import { SignInButton, UserButton, useAuth } from '@clerk/react';
 import { User } from '@scp-app/shared/types';
 import { QueryClient } from '@tanstack/react-query';
-import { createRootRouteWithContext, Link, Outlet } from '@tanstack/react-router';
+import { createRootRouteWithContext, Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { MoonIcon, SunIcon } from 'lucide-react';
 import { useGetMe } from '@/api/me';
 import { Button } from '@/components/ui/button';
@@ -17,9 +17,10 @@ const RootLayout = () => {
   const { dark, toggle } = useTheme();
   const { isSignedIn } = useAuth();
   const { data: me } = useGetMe();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <nav className="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-background p-4">
         <Link to="/" className="[&.active]:font-bold">
           home
@@ -50,7 +51,16 @@ const RootLayout = () => {
           )}
         </div>
       </nav>
-      <Outlet />
+      <div className="flex flex-1 flex-col">
+        <Outlet />
+      </div>
+      {!pathname.startsWith('/admin') && (
+        <footer className="border-t border-border p-4 text-center">
+          <Link to="/privacy" className="text-xs text-muted-foreground hover:text-foreground">
+            privacy policy
+          </Link>
+        </footer>
+      )}
     </div>
   );
 };

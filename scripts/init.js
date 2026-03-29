@@ -48,6 +48,20 @@ for (const filepath of walkFiles(root)) {
   console.log(`  updated  ${path.relative(root, filepath)}`);
 }
 
+// Remove contact section from privacy policy — specific to this template's repo
+const privacyPath = path.join(root, 'apps/web/src/routes/privacy.tsx');
+if (fs.existsSync(privacyPath)) {
+  const privacy = fs.readFileSync(privacyPath, 'utf8');
+  const updated = privacy.replace(
+    /\n\n\s+<section className="space-y-2">\s+<h2[^>]+>Contact<\/h2>[\s\S]*?<\/section>/,
+    '',
+  );
+  if (updated !== privacy) {
+    fs.writeFileSync(privacyPath, updated);
+    console.log('  updated  apps/web/src/routes/privacy.tsx (removed contact section)');
+  }
+}
+
 // Delete lockfile — package names changed, must regenerate
 const lockfile = path.join(root, 'pnpm-lock.yaml');
 if (fs.existsSync(lockfile)) {
