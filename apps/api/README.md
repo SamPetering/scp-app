@@ -37,7 +37,7 @@ pnpm dev
 | `pnpm build`           | Compile to `dist/`                             |
 | `pnpm start`           | Run compiled output                            |
 | `pnpm test`            | Run tests                                      |
-| `pnpm check`           | Lint, format check, build, and test            |
+| `pnpm check`           | Lint, format check, type check, and test       |
 | `pnpm db:generate`     | Generate a migration from schema changes       |
 | `pnpm db:migrate`      | Apply migrations (dev, uses drizzle-kit CLI)   |
 | `pnpm db:migrate:remote` | Apply migrations against a remote Neon DB over HTTP (used by Railway; drizzle-kit CLI doesn't work remotely) |

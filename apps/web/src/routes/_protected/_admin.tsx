@@ -1,6 +1,6 @@
-import { LeftNavLayout } from '@/components/LeftNavLayout';
 import { Link, Outlet, createFileRoute, redirect } from '@tanstack/react-router';
 import { LayoutDashboard, Users } from 'lucide-react';
+import { LeftNavLayout } from '@/components/LeftNavLayout';
 import { Separator } from '@/components/ui/separator';
 
 export const Route = createFileRoute('/_protected/_admin')({

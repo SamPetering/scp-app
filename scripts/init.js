@@ -48,6 +48,20 @@ for (const filepath of walkFiles(root)) {
   console.log(`  updated  ${path.relative(root, filepath)}`);
 }
 
+// Clear TOS content — specific to this template
+const tosPath = path.join(root, 'apps/web/src/routes/tos.tsx');
+if (fs.existsSync(tosPath)) {
+  const tos = fs.readFileSync(tosPath, 'utf8');
+  const updated = tos.replace(
+    /<ol[\s\S]*?<\/ol>/,
+    '<ol className="list-decimal space-y-3 pl-5">\n            {/* Add your terms here */}\n          </ol>',
+  );
+  if (updated !== tos) {
+    fs.writeFileSync(tosPath, updated);
+    console.log('  updated  apps/web/src/routes/tos.tsx (cleared terms list)');
+  }
+}
+
 // Remove contact section from privacy policy — specific to this template's repo
 const privacyPath = path.join(root, 'apps/web/src/routes/privacy.tsx');
 if (fs.existsSync(privacyPath)) {

@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsgo --noEmit && vite build",
     "preview": "vite preview",
     "lint": "oxlint -A no-unused-vars ./src --config ../../.oxlintrc.json",
     "fmt": "oxfmt ./src --write --config ../../.oxfmtrc.json",
     "fmt:check": "oxfmt ./src --check --config ../../.oxfmtrc.json",
-    "check": "pnpm lint && pnpm fmt:check && pnpm build"
+    "check": "pnpm lint && pnpm fmt:check && tsgo --noEmit"
   },
   "dependencies": {
     "@clerk/react": "^6.1.2",
@@ -43,6 +43,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "tailwindcss": "^4.2.2",
+    "@typescript/native-preview": "7.0.0-dev.20260314.1",
     "typescript": "^5.9.3",
     "vite": "^8.0.1",
     "wrangler": "^4.78.0"

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TosRouteImport } from './routes/tos'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ProtectedRouteImport } from './routes/_protected'
@@ -19,6 +20,11 @@ import { Route as ProtectedAdminRouteImport } from './routes/_protected/_admin'
 import { Route as ProtectedAdminAdminIndexRouteImport } from './routes/_protected/_admin/admin.index'
 import { Route as ProtectedAdminAdminUsersRouteImport } from './routes/_protected/_admin/admin.users'
 
+const TosRoute = TosRouteImport.update({
+  id: '/tos',
+  path: '/tos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/privacy': typeof PrivacyRoute
+  '/tos': typeof TosRoute
   '/me': typeof ProtectedMeRoute
   '/admin/users': typeof ProtectedAdminAdminUsersRoute
   '/admin/': typeof ProtectedAdminAdminIndexRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByTo {
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/privacy': typeof PrivacyRoute
+  '/tos': typeof TosRoute
   '/me': typeof ProtectedMeRoute
   '/admin/users': typeof ProtectedAdminAdminUsersRoute
   '/admin': typeof ProtectedAdminAdminIndexRoute
@@ -90,6 +98,7 @@ export interface FileRoutesById {
   '/_protected': typeof ProtectedRouteWithChildren
   '/about': typeof AboutRoute
   '/privacy': typeof PrivacyRoute
+  '/tos': typeof TosRoute
   '/_protected/_admin': typeof ProtectedAdminRouteWithChildren
   '/_protected/me': typeof ProtectedMeRoute
   '/_protected/_admin/admin/users': typeof ProtectedAdminAdminUsersRoute
@@ -102,11 +111,20 @@ export interface FileRouteTypes {
     | '/$'
     | '/about'
     | '/privacy'
+    | '/tos'
     | '/me'
     | '/admin/users'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$' | '/about' | '/privacy' | '/me' | '/admin/users' | '/admin'
+  to:
+    | '/'
+    | '/$'
+    | '/about'
+    | '/privacy'
+    | '/tos'
+    | '/me'
+    | '/admin/users'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -114,6 +132,7 @@ export interface FileRouteTypes {
     | '/_protected'
     | '/about'
     | '/privacy'
+    | '/tos'
     | '/_protected/_admin'
     | '/_protected/me'
     | '/_protected/_admin/admin/users'
@@ -126,10 +145,18 @@ export interface RootRouteChildren {
   ProtectedRoute: typeof ProtectedRouteWithChildren
   AboutRoute: typeof AboutRoute
   PrivacyRoute: typeof PrivacyRoute
+  TosRoute: typeof TosRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tos': {
+      id: '/tos'
+      path: '/tos'
+      fullPath: '/tos'
+      preLoaderRoute: typeof TosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -230,6 +257,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProtectedRoute: ProtectedRouteWithChildren,
   AboutRoute: AboutRoute,
   PrivacyRoute: PrivacyRoute,
+  TosRoute: TosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

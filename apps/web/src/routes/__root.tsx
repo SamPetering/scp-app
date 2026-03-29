@@ -55,9 +55,12 @@ const RootLayout = () => {
         <Outlet />
       </div>
       {!pathname.startsWith('/admin') && (
-        <footer className="border-t border-border p-4 text-center">
+        <footer className="flex justify-center gap-4 border-t border-border p-4">
           <Link to="/privacy" className="text-xs text-muted-foreground hover:text-foreground">
             privacy policy
+          </Link>
+          <Link to="/tos" className="text-xs text-muted-foreground hover:text-foreground">
+            terms of service
           </Link>
         </footer>
       )}
