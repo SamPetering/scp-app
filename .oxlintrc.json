@@ -6,7 +6,13 @@
   },
   "rules": {
     "import/no-cycle": "error",
-    "typescript/no-explicit-any": "error"
+    "typescript/no-explicit-any": "error",
+    "import/no-unassigned-import": [
+      "error",
+      {
+        "allow": ["**/instrument.js", "**/instrument.ts", "**/index.css"]
+      }
+    ]
   },
   "overrides": [
     {
