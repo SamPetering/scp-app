@@ -40,7 +40,7 @@ pnpm dev
 | `pnpm check`           | Lint, format check, build, and test            |
 | `pnpm db:generate`     | Generate a migration from schema changes       |
 | `pnpm db:migrate`      | Apply migrations (dev, uses drizzle-kit CLI)   |
-| `pnpm db:migrate:prod` | Apply migrations (production, used by Railway) |
+| `pnpm db:migrate:remote` | Apply migrations against a remote Neon DB over HTTP (used by Railway; drizzle-kit CLI doesn't work remotely) |
 
 ## Deployment
 

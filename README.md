@@ -2,29 +2,6 @@
 
 Fullstack monorepo template — Fastify API + Vite/React frontend.
 
-## Using this template
-
-```sh
-git clone https://github.com/you/scp-app my-project
-cd my-project
-node scripts/init.js
-```
-
-The init script will:
-
-1. Prompt for a project name (kebab-case)
-2. Replace all occurrences of `scp-app` with your project name across the repo
-3. Delete `pnpm-lock.yaml` so it is regenerated with the new package names
-4. Copy `apps/api/.env.example` → `apps/api/.env` and `apps/web/.env.example` → `apps/web/.env`
-5. Self-delete (`scripts/init.js` is removed when done)
-
-After init, fill in your env files and run:
-
-```sh
-pnpm install
-pnpm dev
-```
-
 ## Structure
 
 ```
@@ -52,41 +29,192 @@ packages/
 | `pnpm fmt`       | Format all files with oxfmt      |
 | `pnpm fmt:check` | Check formatting without writing |
 
-See [`apps/api`](apps/api/README.md) and [`apps/web`](apps/web/README.md) for full setup instructions.
+See [`apps/api`](apps/api/README.md) and [`apps/web`](apps/web/README.md) for more detail.
 
-## Clerk setup
+---
 
-### 1. Create a Clerk application
+## Setup guide
 
-Go to [clerk.com](https://clerk.com), create an application, and copy the API keys into your env files:
+### 1. Create external services
 
-| Key | File |
-| --- | ---- |
-| `CLERK_PUBLISHABLE_KEY` | `apps/api/.env` |
-| `CLERK_SECRET_KEY` | `apps/api/.env` |
-| `VITE_CLERK_PUBLISHABLE_KEY` | `apps/web/.env` |
+**Clerk**
 
-### 2. Configure webhooks
+Clerk has separate dev and production instances with different keys (`pk_test_...` vs `pk_live_...`). Use the dev instance for local development and create a production instance when deploying.
 
-The API listens at `POST /webhooks/clerk` and syncs users to the database on `user.created`, `user.updated`, and `user.deleted` events.
+1. Go to [clerk.com](https://clerk.com) and create an application — this creates your dev instance.
+2. Copy your dev API keys — you'll need them in step 2:
+   - Publishable key (`pk_test_...`)
+   - Secret key (`sk_test_...`)
+3. If you have social login providers enabled (e.g. Google), you'll need to set up your own OAuth credentials for the production instance — see step 3.
 
-In the Clerk dashboard → **Webhooks** → **Add endpoint**:
+**Neon**
 
-- **URL:** `https://<your-api-domain>/webhooks/clerk`
+Neon supports branch-based environments. Use `main` for production and a `dev` branch for local development so you can experiment freely without touching production data.
+
+1. Go to [neon.tech](https://neon.tech) and create a project.
+2. In the Neon dashboard, create a `dev` branch from `main`.
+3. Copy the connection string for the `dev` branch — you'll use it locally in step 2. The `main` branch connection string is for production in step 3.
+
+**Sentry** _(optional)_
+
+1. Go to [sentry.io](https://sentry.io) and create a Node.js project and a Browser (React) project.
+2. Copy both DSNs — you'll need them in steps 2 and 3.
+
+---
+
+### 2. Clone and init locally
+
+```sh
+git clone https://github.com/you/scp-app my-project
+cd my-project
+node scripts/init.js
+```
+
+The init script will:
+
+1. Prompt for a project name (kebab-case)
+2. Replace all occurrences of `scp-app` with your project name across the repo
+3. Delete `pnpm-lock.yaml` so it is regenerated with the new package names
+4. Copy `apps/api/.env.example` → `apps/api/.env` and `apps/web/.env.example` → `apps/web/.env`
+5. Self-delete (`scripts/init.js` is removed when done)
+
+Create a new GitHub repo and push:
+
+```sh
+gh repo create my-project --private --source=. --remote=origin --push
+```
+
+Or manually: create a repo on GitHub, then:
+
+```sh
+git remote set-url origin https://github.com/you/my-project
+git push -u origin main
+```
+
+Fill in your env files with **development** values (Clerk dev instance, Neon dev branch, etc.). Production values are set directly in Railway and Cloudflare Pages — there is no separate `.env.production` file.
+
+**`apps/api/.env`**
+
+| Variable                | Value                                     |
+| ----------------------- | ----------------------------------------- |
+| `CLERK_PUBLISHABLE_KEY` | Clerk dev publishable key (`pk_test_...`) |
+| `CLERK_SECRET_KEY`      | Clerk dev secret key (`sk_test_...`)      |
+| `CLERK_WEBHOOK_SECRET`  | Leave blank for now — see step 4          |
+| `DATABASE_URL`          | Neon `dev` branch connection string       |
+| `SENTRY_DSN`            | Sentry Node.js DSN _(optional)_           |
+
+**`apps/web/.env`**
+
+| Variable                     | Value                                     |
+| ---------------------------- | ----------------------------------------- |
+| `VITE_CLERK_PUBLISHABLE_KEY` | Clerk dev publishable key (`pk_test_...`) |
+| `VITE_API_URL`               | `http://localhost:3000`                   |
+| `VITE_SENTRY_DSN`            | Sentry browser DSN _(optional)_           |
+
+Then install and run:
+
+```sh
+pnpm install
+pnpm dev
+```
+
+---
+
+### 3. Deploy to Railway and Cloudflare Pages
+
+**Clerk production instance**
+
+Before deploying, set up your Clerk production instance:
+
+1. In the Clerk dashboard, switch to your production instance.
+2. Under **Configure → Domains**, add your domain and add the DNS records Clerk provides to Cloudflare. Set all Clerk DNS records to **DNS only (grey cloud)** — proxying them will break Clerk.
+3. If you have social login providers enabled (e.g. Google), go to **Configure → SSO Connections** and add your own OAuth credentials for each provider. Clerk uses shared credentials in development but requires your own in production.
+4. Copy your production API keys (`pk_live_...`, `sk_live_...`).
+
+**Railway (API)**
+
+1. Go to [railway.app](https://railway.app), create a new project, and connect your Git repository.
+2. Add environment variables to the Railway service:
+
+   | Variable                | Value                                |
+   | ----------------------- | ------------------------------------ |
+   | `NODE_ENV`              | `production`                         |
+   | `HOST`                  | `0.0.0.0`                            |
+   | `CLERK_PUBLISHABLE_KEY` | `pk_live_...`                        |
+   | `CLERK_SECRET_KEY`      | `sk_live_...`                        |
+   | `CLERK_WEBHOOK_SECRET`  | Leave blank for now — see step 4     |
+   | `DATABASE_URL`          | Neon `main` branch connection string |
+   | `SENTRY_DSN`            | Sentry Node.js DSN _(optional)_      |
+
+3. Add a custom domain under **Settings → Networking → Custom Domain** (e.g. `api.your-domain.com`). Railway will provide a CNAME and TXT record — add both to Cloudflare DNS as **DNS only (grey cloud)**.
+4. Railway will deploy automatically on push to `main`. Build, migration, and start commands are configured in [`railway.toml`](railway.toml).
+
+**Cloudflare Pages (web)**
+
+1. Go to the Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** → connect your Git repository.
+2. Set the build configuration:
+
+   | Setting                | Value                                                   |
+   | ---------------------- | ------------------------------------------------------- |
+   | Build command          | `pnpm --filter shared build && pnpm --filter web build` |
+   | Build output directory | `apps/web/dist`                                         |
+   | Root directory         | _(leave blank)_                                         |
+
+3. Add environment variables under **Settings → Environment variables (Production)**:
+
+   | Variable                     | Value                                              |
+   | ---------------------------- | -------------------------------------------------- |
+   | `VITE_CLERK_PUBLISHABLE_KEY` | `pk_live_...`                                      |
+   | `VITE_API_URL`               | `https://api.your-domain.com` (include `https://`) |
+
+   > These are baked in at build time — a redeploy is required after changing them.
+
+4. Add your frontend domain to `PROD_ORIGINS` in [`apps/api/src/plugins/cors.ts`](apps/api/src/plugins/cors.ts) and redeploy the API:
+
+   ```ts
+   const PROD_ORIGINS: string[] = ['https://your-domain.com'];
+   ```
+
+---
+
+### 4. Configure Clerk webhooks
+
+The API syncs users to the database on `user.created`, `user.updated`, and `user.deleted` events via `POST /webhooks/clerk`.
+
+**Production**
+
+In the Clerk dashboard (production instance) → **Webhooks** → **Add endpoint**:
+
+- **URL:** `https://api.your-domain.com/webhooks/clerk`
 - **Events:** `user.created`, `user.updated`, `user.deleted`
 
-After saving, copy the **Signing Secret** into `apps/api/.env`:
+After saving, copy the **Signing Secret** and add it to your Railway environment variables:
 
 ```
 CLERK_WEBHOOK_SECRET=whsec_...
 ```
 
-### 3. Local webhook testing
+**Local**
 
-Use the [Svix CLI](https://docs.svix.com/receiving/using-app-portal/webhooks-cli) or [ngrok](https://ngrok.com) to forward webhooks to your local API:
+Use [ngrok](https://ngrok.com) to expose your local API:
 
 ```sh
 ngrok http 3000
 ```
 
-Then set the webhook endpoint URL in Clerk to your ngrok URL.
+Add a second webhook endpoint in Clerk (dev instance) pointing to your ngrok URL, copy its signing secret into `apps/api/.env`, and restart the API.
+
+---
+
+### 5. Grant yourself admin
+
+Sign in to the app at least once so your user is synced to the database, then run the following in the [Neon SQL editor](https://console.neon.tech):
+
+```sql
+INSERT INTO users_role (user_id, role)
+SELECT id, 'admin'
+FROM users
+WHERE email = 'you@example.com';
+```
+
+Once you have admin access, you can grant other users admin from `/admin/users` in the app.

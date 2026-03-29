@@ -1,9 +1,11 @@
 export function getEnvironment() {
-  return process.env.NODE_ENV === 'prod'
-    ? 'prod'
-    : process.env.NODE_ENV === 'test'
-      ? 'test'
-      : 'dev';
+  return process.env.NODE_ENV === 'production'
+    ? 'production'
+    : process.env.NODE_ENV === 'staging'
+      ? 'staging'
+      : process.env.NODE_ENV === 'test'
+        ? 'test'
+        : 'dev';
 }
 
 console.log('NODE_ENV: ', getEnvironment());

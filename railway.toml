@@ -9,7 +9,7 @@ watchPatterns = [
 ]
 
 [deploy]
-preDeployCommand = ["pnpm --filter api db:migrate:prod"]
+preDeployCommand = ["pnpm --filter api db:migrate:remote"]
 startCommand = "pnpm --filter api start"
 healthcheckPath = "/health"
 restartPolicyType = "ON_FAILURE"
