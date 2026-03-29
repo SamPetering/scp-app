@@ -35,3 +35,11 @@ pnpm dev
 | `pnpm build`     | Type-check and build to `dist/`  |
 | `pnpm preview`   | Preview the production build     |
 | `pnpm check`     | Lint, format check, and build    |
+
+## Deployment (Cloudflare Pages)
+
+- **Build command:** `pnpm build`
+- **Output directory:** `dist`
+- Set env vars (`VITE_CLERK_PUBLISHABLE_KEY`, `VITE_API_URL`, etc.) in the Cloudflare Pages dashboard
+
+`public/_redirects` is included to handle client-side routing — all paths fall through to `index.html`.

@@ -8,8 +8,21 @@ Fullstack monorepo template — Fastify API + Vite/React frontend.
 git clone https://github.com/you/scp-app my-project
 cd my-project
 node scripts/init.js
+```
+
+The init script will:
+
+1. Prompt for a project name (kebab-case)
+2. Replace all occurrences of `scp-app` with your project name across the repo
+3. Delete `pnpm-lock.yaml` so it is regenerated with the new package names
+4. Copy `apps/api/.env.example` → `apps/api/.env` and `apps/web/.env.example` → `apps/web/.env`
+5. Self-delete (`scripts/init.js` is removed when done)
+
+After init, fill in your env files and run:
+
+```sh
 pnpm install
-cp apps/api/.env.example apps/api/.env
+pnpm dev
 ```
 
 ## Structure
@@ -27,7 +40,7 @@ packages/
 - **Package manager:** pnpm workspaces
 - **API:** Node.js + TypeScript, Fastify, Drizzle ORM, Neon (Postgres), Clerk auth
 - **Web:** Vite, React, TypeScript
-- **Deployment:** Railway
+- **Deployment:** API → Railway, Web → Cloudflare Pages
 
 ## Scripts
 
