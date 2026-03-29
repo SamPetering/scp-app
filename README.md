@@ -53,3 +53,40 @@ packages/
 | `pnpm fmt:check` | Check formatting without writing |
 
 See [`apps/api`](apps/api/README.md) and [`apps/web`](apps/web/README.md) for full setup instructions.
+
+## Clerk setup
+
+### 1. Create a Clerk application
+
+Go to [clerk.com](https://clerk.com), create an application, and copy the API keys into your env files:
+
+| Key | File |
+| --- | ---- |
+| `CLERK_PUBLISHABLE_KEY` | `apps/api/.env` |
+| `CLERK_SECRET_KEY` | `apps/api/.env` |
+| `VITE_CLERK_PUBLISHABLE_KEY` | `apps/web/.env` |
+
+### 2. Configure webhooks
+
+The API listens at `POST /webhooks/clerk` and syncs users to the database on `user.created`, `user.updated`, and `user.deleted` events.
+
+In the Clerk dashboard → **Webhooks** → **Add endpoint**:
+
+- **URL:** `https://<your-api-domain>/webhooks/clerk`
+- **Events:** `user.created`, `user.updated`, `user.deleted`
+
+After saving, copy the **Signing Secret** into `apps/api/.env`:
+
+```
+CLERK_WEBHOOK_SECRET=whsec_...
+```
+
+### 3. Local webhook testing
+
+Use the [Svix CLI](https://docs.svix.com/receiving/using-app-portal/webhooks-cli) or [ngrok](https://ngrok.com) to forward webhooks to your local API:
+
+```sh
+ngrok http 3000
+```
+
+Then set the webhook endpoint URL in Clerk to your ngrok URL.
