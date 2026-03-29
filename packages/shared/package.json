@@ -7,11 +7,13 @@
   "exports": {
     "./types": {
       "types": "./src/types/index.ts",
-      "default": "./dist/types/index.js"
+      "node": "./dist/types/index.js",
+      "default": "./src/types/index.ts"
     }
   },
   "scripts": {
-    "build": "tsgo"
+    "build": "tsgo",
+    "check": "tsgo"
   },
   "dependencies": {
     "zod": "^4.3.6"
