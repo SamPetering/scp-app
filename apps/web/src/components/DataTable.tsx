@@ -1,4 +1,5 @@
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { cva, VariantProps } from 'class-variance-authority';
 import {
   Table,
   TableBody,
@@ -7,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 
 interface DataTableProps<TData> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,7 +16,27 @@ interface DataTableProps<TData> {
   data: TData[];
 }
 
-export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
+const tableVariants = cva('', {
+  variants: {
+    variant: { default: 'border', minimal: 'border-none' },
+    size: {
+      default: 'text-base',
+      sm: 'text-sm',
+      xs: 'text-xs',
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
+  },
+});
+
+export function DataTable<TData>({
+  columns,
+  data,
+  variant = 'default',
+  size = 'default',
+}: DataTableProps<TData> & VariantProps<typeof tableVariants>) {
   const table = useReactTable({
     data,
     columns,
@@ -22,7 +44,7 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
   });
 
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className={cn('overflow-hidden rounded-md border', tableVariants({ variant }))}>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -44,7 +66,7 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} className={tableVariants({ size })}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

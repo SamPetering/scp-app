@@ -2,11 +2,10 @@ import { User } from '@scp-app/shared/types';
 import { createFileRoute } from '@tanstack/react-router';
 import { createColumnHelper } from '@tanstack/react-table';
 import { addWeeks, format, isAfter, isBefore, startOfWeek, subDays } from 'date-fns';
-import { Users, UserPlus } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { useGetUsers } from '@/api/admin';
 import { Chart } from '@/components/Chart';
 import { DataTable } from '@/components/DataTable';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const Route = createFileRoute('/_protected/_admin/admin/')({
@@ -18,18 +17,6 @@ const col = createColumnHelper<User>();
 const recentColumns = [
   col.accessor('name', { header: 'Name' }),
   col.accessor('email', { header: 'Email' }),
-  col.accessor('roles', {
-    header: 'Roles',
-    cell: ({ getValue }) => (
-      <div className="flex gap-1">
-        {getValue().map((role) => (
-          <Badge key={role} variant={role === 'admin' ? 'default' : 'secondary'}>
-            {role}
-          </Badge>
-        ))}
-      </div>
-    ),
-  }),
   col.accessor('createdAt', {
     header: 'Joined',
     cell: ({ getValue }) => (
@@ -40,27 +27,22 @@ const recentColumns = [
 
 function StatCard({
   title,
-  value,
   icon: Icon,
-  description,
-  valueClassName = 'text-4xl',
+  children,
+  className,
 }: {
   title: string;
-  value: number | string;
-  icon: React.ElementType;
-  description?: string;
-  valueClassName?: string;
+  icon?: React.ElementType;
+  children?: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        <Icon size={16} className="text-muted-foreground" />
+        {Icon && <Icon size={16} className="text-muted-foreground" />}
       </CardHeader>
-      <CardContent>
-        <p className={`font-bold ${valueClassName}`}>{value}</p>
-        {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
-      </CardContent>
+      <CardContent>{children}</CardContent>
     </Card>
   );
 }
@@ -69,7 +51,7 @@ const signupsChartConfig = {
   count: { label: 'Signups', color: 'var(--chart-3)' },
 };
 
-function SignupsChart({ users }: { users: User[] }) {
+function SignupsChart({ users, className }: { users: User[]; className?: string }) {
   const now = new Date();
   const data = Array.from({ length: 8 }, (_, i) => {
     const start = startOfWeek(addWeeks(now, i - 7));
@@ -84,16 +66,9 @@ function SignupsChart({ users }: { users: User[] }) {
   });
 
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          Signups (last 8 weeks)
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Chart data={data} config={signupsChartConfig} labelKey="week" className="h-32 w-full" />
-      </CardContent>
-    </Card>
+    <StatCard title="Signups (last 8 weeks)" className={className}>
+      <Chart data={data} config={signupsChartConfig} labelKey="week" className="h-32 w-full" />
+    </StatCard>
   );
 }
 
@@ -110,35 +85,23 @@ function AdminDashboard() {
   const sorted = [...users].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
-  const latestUser = sorted[0] ?? null;
   const recent = sorted.slice(0, 5);
 
   return (
     <div className="space-y-8 p-8">
       <h1 className="text-2xl font-bold">Overview</h1>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatCard
-          title="Total Users"
-          value={users.length}
-          icon={Users}
-          description={`+${newCount} this month`}
-        />
-        <StatCard
-          title="Latest Signup"
-          value={latestUser?.name ?? '—'}
-          icon={UserPlus}
-          valueClassName="text-2xl"
-          description={
-            latestUser ? format(new Date(latestUser.createdAt), 'MMM d, yyyy') : undefined
-          }
-        />
-        <SignupsChart users={users} />
-      </div>
-
-      <div>
-        <h2 className="mb-3 text-lg font-semibold">Recent Signups</h2>
-        <DataTable columns={recentColumns} data={recent} />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
+        <StatCard title="Total Users" icon={Users} className="md:col-span-1">
+          <>
+            <p className="text-6xl font-bold">{users.length}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{`+${newCount} this month`}</p>
+          </>
+        </StatCard>
+        <SignupsChart users={users} className="md:col-span-2" />
+        <StatCard title="Recent Signups" icon={Users} className="md:col-span-2">
+          <DataTable columns={recentColumns} data={recent} variant="minimal" size="xs" />
+        </StatCard>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@scp-app/web",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -7,9 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "lint": "oxlint -A no-unused-vars ./src",
-    "fmt": "oxfmt ./src --write",
-    "fmt:check": "oxfmt ./src --check",
+    "lint": "oxlint -A no-unused-vars ./src --config ../../.oxlintrc.json",
+    "fmt": "oxfmt ./src --write --config ../../.oxfmtrc.json",
+    "fmt:check": "oxfmt ./src --check --config ../../.oxfmtrc.json",
     "check": "pnpm lint && pnpm fmt:check && pnpm build"
   },
   "dependencies": {

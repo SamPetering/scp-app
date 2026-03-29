@@ -6,7 +6,7 @@
   "experimentalSortImports": {
     "newlinesBetween": false
   },
-  "ignorePatterns": ["dist/**", "node_modules/**"],
+  "ignorePatterns": ["dist/**", "node_modules/**", "apps/web/src/routeTree.gen.ts"],
   "overrides": [
     {
       "files": ["**/*.json", "**/*.jsonc"],

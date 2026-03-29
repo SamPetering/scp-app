@@ -30,7 +30,6 @@ const users: FastifyPluginAsyncZod = async (fastify) => {
       reply.code(200).send(updated);
     },
   );
-
 };
 
 export default users;

@@ -12,7 +12,8 @@
     "dev:web": "pnpm --filter web dev",
     "build": "pnpm --filter api build && pnpm --filter web build",
     "fmt": "pnpm -r fmt",
-    "fmt:check": "pnpm -r fmt:check"
+    "fmt:check": "pnpm -r fmt:check",
+    "check": "pnpm -r check"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
