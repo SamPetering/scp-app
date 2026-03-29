@@ -6,6 +6,8 @@ export function getEnvironment() {
       : 'dev';
 }
 
+console.log('NODE_ENV: ', getEnvironment());
+
 type VariableKey =
   | 'PORT'
   | 'HOST'
