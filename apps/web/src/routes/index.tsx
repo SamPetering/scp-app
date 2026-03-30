@@ -82,7 +82,6 @@ function Index() {
                 placeholder: 'my-project',
                 id: 'project-name',
               }}
-              // label="Project Name"
               className="ml-auto max-w-64"
             />
           </div>

@@ -5,9 +5,11 @@
   "keywords": [],
   "license": "ISC",
   "author": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently -n api,web -c cyan,magenta \"pnpm dev:api\" \"pnpm dev:web\"",
+    "dev": "pnpm --filter shared build && concurrently -n shared,api,web -c blue,cyan,magenta \"pnpm dev:shared\" \"pnpm dev:api\" \"pnpm dev:web\"",
+    "dev:shared": "pnpm --filter shared dev",
     "dev:api": "pnpm --filter api dev",
     "dev:web": "pnpm --filter web dev",
     "build": "pnpm --filter shared build && pnpm --filter api build && pnpm --filter web build",

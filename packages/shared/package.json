@@ -12,6 +12,7 @@
     }
   },
   "scripts": {
+    "dev": "tsgo --watch",
     "build": "tsgo",
     "check": "tsgo --noEmit"
   },
