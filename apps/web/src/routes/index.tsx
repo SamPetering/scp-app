@@ -26,16 +26,12 @@ function Index() {
 
   return (
     <PageLayout className="items-center">
-      <div className="flex w-full max-w-4xl flex-col items-center gap-8">
+      <div className="flex w-full max-w-3xl flex-col items-center gap-8">
         {/* Header */}
         <div className="relative z-1 bg-background">
           <div className="border-animation" />
           <div className="rounded-b-xl bg-background">
-            <div
-              className={
-                'mx-auto flex max-w-3xl flex-col gap-3 rounded-b-xl border border-t-0 bg-muted/40 p-8 px-6 text-center'
-              }
-            >
+            <div className="flex flex-col gap-3 rounded-b-xl border border-t-0 bg-muted/10 px-6 py-8 text-center">
               <h1 className="text-4xl font-bold">scp-app</h1>
               <p className="text-lg text-balance text-muted-foreground">
                 Fullstack monorepo template — Fastify API + Vite/React frontend with auth, a
@@ -76,7 +72,7 @@ function Index() {
         </div>
 
         {/* Getting started */}
-        <div className="flex max-w-3xl flex-col gap-3">
+        <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3 border-b pb-4">
             <h2 className="text-xl font-semibold">Get started</h2>
             <InputField

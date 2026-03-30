@@ -64,21 +64,27 @@ const STACK: { name: string; description: string; href: string }[] = [
 
 function About() {
   return (
-    <PageLayout className="items-center py-4">
+    <PageLayout className="items-center pb-4">
       <div className="flex w-full max-w-3xl flex-col gap-8">
         {/* Intro */}
-        <div className="flex flex-col gap-3">
-          <h1 className="text-3xl font-bold">About scp-app</h1>
-          <p className="text-muted-foreground">
-            scp-app is a fullstack TypeScript monorepo template. Rather than spending the first days
-            of a new project wiring up auth, a database, deployments, and a component library, this
-            template has all of that ready to go — opinionated but easy to adapt.
-          </p>
-          <p className="text-muted-foreground">
-            The goal is a stack that stays out of your way: end-to-end type safety, a great
-            developer experience, and zero-friction deployments. Clone it, run the init script, and
-            start building the thing that actually matters.
-          </p>
+        <div className="relative z-1 bg-background">
+          <div className="border-animation" />
+
+          <div className="rounded-b-xl bg-background">
+            <div className="flex flex-col gap-3 rounded-b-xl bg-muted/10 px-6 py-8">
+              <h1 className="text-center text-4xl font-bold">About</h1>
+              <p className="text-center text-muted-foreground">
+                scp-app is a fullstack TypeScript monorepo template. Rather than spending the first
+                days of a new project wiring up auth, a database, deployments, and a component
+                library, this template has all of that ready to go — opinionated but easy to adapt.
+              </p>
+              <p className="text-center text-muted-foreground">
+                The goal is a stack that stays out of your way: end-to-end type safety, a great
+                developer experience, and zero-friction deployments. Clone it, run the init script,
+                and start building the thing that actually matters.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Stack */}
