@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // Run once after cloning: node scripts/init.js
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as readline from 'readline/promises';
@@ -46,6 +47,28 @@ for (const filepath of walkFiles(root)) {
   const after = before.replaceAll(OLD, name);
   fs.writeFileSync(filepath, after);
   console.log(`  updated  ${path.relative(root, filepath)}`);
+}
+
+// Replace homepage with minimal template
+const indexPath = path.join(root, 'apps/web/src/routes/index.tsx');
+if (fs.existsSync(indexPath)) {
+  const homepage = `import { createFileRoute } from '@tanstack/react-router';
+import { PageLayout } from '@/components/PageLayout';
+
+export const Route = createFileRoute('/')({
+  component: Index,
+});
+
+function Index() {
+  return (
+    <PageLayout className="items-center justify-center">
+      ${name}
+    </PageLayout>
+  );
+}
+`;
+  fs.writeFileSync(indexPath, homepage);
+  console.log('  updated  apps/web/src/routes/index.tsx (replaced with minimal template)');
 }
 
 // Clear TOS content — specific to this template
@@ -95,6 +118,24 @@ for (const envExample of [
   }
 }
 
+// Install
+let installOk = true;
+try {
+  execSync('pnpm install', { cwd: root, stdio: 'inherit' });
+} catch {
+  installOk = false;
+  console.warn('  warning  pnpm install failed');
+}
+
+// Format (only if install succeeded)
+if (installOk) {
+  try {
+    execSync('pnpm fmt', { cwd: root, stdio: 'inherit' });
+  } catch {
+    console.warn('  warning  pnpm fmt failed, skipping');
+  }
+}
+
 // Self-delete
 fs.unlinkSync(__filename);
 try {
@@ -106,5 +147,9 @@ try {
 console.log(`\nDone! Project initialized as "${name}".`);
 console.log('Next steps:');
 console.log('  1. Fill in apps/api/.env and apps/web/.env with your keys');
-console.log('  2. pnpm install');
-console.log('  3. pnpm dev');
+if (installOk) {
+  console.log('  2. pnpm dev');
+} else {
+  console.log('  2. pnpm install');
+  console.log('  3. pnpm dev');
+}
