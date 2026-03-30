@@ -89,18 +89,15 @@ function Index() {
           <Step n={1} title="Clone and init">
             <CodeBlock>{`git clone ${GITHUB_URL} ${name}\ncd ${name}\nnode scripts/init.js`}</CodeBlock>
             <p className="text-sm text-muted-foreground">
-              The init script prompts for a project name, replaces all{' '}
-              <code className="rounded bg-muted px-1 text-xs">scp-app</code> references, copies{' '}
-              <code className="rounded bg-muted px-1 text-xs">.env.example</code> files, and removes
-              itself.
+              Prompts for a project name and whether to create a GitHub repo. Replaces all{' '}
+              <code className="rounded bg-muted px-1 text-xs">scp-app</code> references, applies
+              minimal templates, copies{' '}
+              <code className="rounded bg-muted px-1 text-xs">.env.example</code> files, installs
+              dependencies, and removes itself.
             </p>
           </Step>
 
-          <Step n={2} title="Push to GitHub">
-            <CodeBlock>{`gh repo create ${name} --private --source=. --remote=origin --push`}</CodeBlock>
-          </Step>
-
-          <Step n={3} title="Fill in env vars and run">
+          <Step n={2} title="Fill in env vars and run">
             <p className="text-sm text-muted-foreground">
               Add your Clerk and Neon dev keys to{' '}
               <code className="rounded bg-muted px-1 text-xs">apps/api/.env</code> and{' '}
@@ -109,7 +106,7 @@ function Index() {
             <CodeBlock>{`pnpm dev`}</CodeBlock>
           </Step>
 
-          <Step n={4} title="Deploy" isLast>
+          <Step n={3} title="Deploy" isLast>
             <p className="text-sm text-muted-foreground">
               Deploy the API to{' '}
               <a

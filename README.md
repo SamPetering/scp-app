@@ -4,12 +4,12 @@ Fullstack monorepo template — Fastify API + Vite/React frontend.
 
 ## Requirements
 
-| Tool                                        | Install                                                                      | Notes                                               |
-| ------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------- |
-| [Node.js](https://nodejs.org) v20+          | `nvm install 20` ([nvm](https://www.nvmnode.com/guide/installation-sh.html)) | JavaScript runtime                                  |
-| [pnpm](https://pnpm.io)                     | `curl -fsSL https://get.pnpm.io/install.sh \| sh -`                          | Faster, more disk-efficient alternative to npm/yarn |
-| [GitHub CLI](https://cli.github.com) (`gh`) | `brew install gh`                                                            | Used for the one-liner repo create + push           |
-| [ngrok](https://ngrok.com) _(optional)_     | `brew install ngrok`                                                         | Only needed to test Clerk webhooks locally          |
+| Tool                                 | Install                                                                      | Notes                                                   |
+| ------------------------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [Node.js](https://nodejs.org) v20+   | `nvm install 20` ([nvm](https://www.nvmnode.com/guide/installation-sh.html)) | JavaScript runtime                                      |
+| [pnpm](https://pnpm.io)              | `curl -fsSL https://get.pnpm.io/install.sh \| sh -`                          | Faster, more disk-efficient alternative to npm/yarn     |
+| [GitHub CLI](https://cli.github.com) | `brew install gh`                                                            | Used for the one-liner repo create + push               |
+| [ngrok](https://ngrok.com)           | `brew install ngrok`                                                         | _(optional)_ Only needed to test Clerk webhooks locally |
 
 ## Structure
 
@@ -105,24 +105,14 @@ node scripts/init.js
 The init script will:
 
 1. Prompt for a project name (kebab-case)
-2. Replace all occurrences of `scp-app` with your project name across the repo
-3. Delete `pnpm-lock.yaml` so it is regenerated with the new package names
-4. Copy `apps/api/.env.example` → `apps/api/.env` and `apps/web/.env.example` → `apps/web/.env`
-5. Run `pnpm install` and `pnpm fmt`
-6. Self-delete (`scripts/init.js` is removed when done)
-
-Create a new GitHub repo and push:
-
-```sh
-gh repo create my-project --private --source=. --remote=origin --push
-```
-
-Or manually: create a repo on GitHub, then:
-
-```sh
-git remote set-url origin https://github.com/you/my-project
-git push -u origin main
-```
+2. Prompt whether to create a GitHub repository
+3. Replace all occurrences of `scp-app` with your project name across the repo
+4. Apply minimal page and README templates
+5. Delete `pnpm-lock.yaml` so it is regenerated with the new package names
+6. Copy `apps/api/.env.example` → `apps/api/.env` and `apps/web/.env.example` → `apps/web/.env`
+7. Run `pnpm install` and `pnpm fmt`
+8. Self-delete (`scripts/init.js` is removed when done)
+9. Reset git history, create a private GitHub repo, and push an initial commit _(if opted in)_
 
 Fill in your env files with **development** values (Clerk dev instance, Neon dev branch, etc.). Production values are set directly in Railway and Cloudflare Pages — there is no separate `.env.production` file.
 
