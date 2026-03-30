@@ -49,6 +49,14 @@ for (const tool of ['pnpm', 'git', 'gh']) {
   }
 }
 
+// Ensure gh is authenticated
+try {
+  execSync('gh auth status', { stdio: 'ignore' });
+} catch {
+  log.warn('GitHub CLI is not authenticated — launching gh auth login...');
+  execSync('gh auth login', { stdio: 'inherit' });
+}
+
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 const defaultName = path.basename(root);
 const input = (await rl.question(`Project name (kebab-case) [${defaultName}]: `)).trim();
@@ -250,7 +258,9 @@ if (!dryRun) {
 
 console.log(`\n${c.green(c.bold('✓'))} ${c.bold(`Project initialized as "${name}"`)}`);
 console.log(`\n${c.bold('Next steps:')}`);
-console.log(`  1. Fill in ${c.cyan('apps/api/.env')} and ${c.cyan('apps/web/.env')} with your keys`);
+console.log(
+  `  1. Fill in ${c.cyan('apps/api/.env')} and ${c.cyan('apps/web/.env')} with your keys`,
+);
 if (installOk) {
   console.log(`  2. ${c.cyan('pnpm dev')}`);
 } else {
