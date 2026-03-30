@@ -4,12 +4,12 @@ Fullstack monorepo template — Fastify API + Vite/React frontend.
 
 ## Requirements
 
-| Tool                                        | Install                                                 | Notes                                               |
-| ------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------- |
-| [Node.js](https://nodejs.org) v20+          | `nvm install 20` ([nvm](https://github.com/nvm-sh/nvm)) | JavaScript runtime                                  |
-| [pnpm](https://pnpm.io)                     | `curl -fsSL https://get.pnpm.io/install.sh \| sh -`     | Faster, more disk-efficient alternative to npm/yarn |
-| [GitHub CLI](https://cli.github.com) (`gh`) | `brew install gh`                                       | Used for the one-liner repo create + push           |
-| [ngrok](https://ngrok.com) _(optional)_     | `brew install ngrok`                                    | Only needed to test Clerk webhooks locally          |
+| Tool                                        | Install                                                                      | Notes                                               |
+| ------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------- |
+| [Node.js](https://nodejs.org) v20+          | `nvm install 20` ([nvm](https://www.nvmnode.com/guide/installation-sh.html)) | JavaScript runtime                                  |
+| [pnpm](https://pnpm.io)                     | `curl -fsSL https://get.pnpm.io/install.sh \| sh -`                          | Faster, more disk-efficient alternative to npm/yarn |
+| [GitHub CLI](https://cli.github.com) (`gh`) | `brew install gh`                                                            | Used for the one-liner repo create + push           |
+| [ngrok](https://ngrok.com) _(optional)_     | `brew install ngrok`                                                         | Only needed to test Clerk webhooks locally          |
 
 ## Structure
 

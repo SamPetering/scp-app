@@ -49,12 +49,12 @@ Hosted on Railway, deploying automatically on push to `main`.
 **Deploy sequence:**
 
 1. Build: `pnpm install --frozen-lockfile && pnpm build`
-2. Pre-deploy: `pnpm db:migrate:prod` — runs pending migrations via `dist/db/migrate.js`
+2. Pre-deploy: `pnpm db:migrate:remote` — runs pending migrations via `dist/db/migrate.js`
 3. Start: `pnpm start`
 
 Railway injects `PORT` automatically. `HOST` must be set to `0.0.0.0` in the Railway service's environment variables or the healthcheck fails. The healthcheck hits `GET /health` — if it doesn't respond within 5 minutes Railway rolls back the deploy.
 
-`pnpm db:migrate:prod` uses drizzle-orm's migrate function directly over HTTP rather than the drizzle-kit CLI, which uses a WebSocket transport that doesn't work reliably on Railway.
+`pnpm db:migrate:remote` uses drizzle-orm's migrate function directly over HTTP rather than the drizzle-kit CLI, which uses a WebSocket transport that doesn't work reliably on Railway.
 
 ## Error reporting
 

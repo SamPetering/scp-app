@@ -128,3 +128,32 @@
     @apply font-sans;
   }
 }
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.border-animation {
+  @apply absolute -inset-1 -z-1 rounded-b-2xl;
+  background-image: conic-gradient(
+    from var(--angle) at 50% 0%,
+    var(--chart-4),
+    var(--chart-3),
+    var(--chart-2),
+    var(--chart-1),
+    var(--chart-5),
+    var(--chart-4)
+  );
+  animation: 10s border-spin linear infinite;
+}
+
+@keyframes border-spin {
+  from {
+    --angle: 0deg;
+  }
+  to {
+    --angle: 360deg;
+  }
+}

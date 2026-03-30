@@ -39,8 +39,7 @@ const STACK: { name: string; description: string; href: string }[] = [
   },
   {
     name: 'Tailwind CSS',
-    description:
-      'Utility-first CSS that scales. Combined with shadcn/ui and a customizable theme, you can build anything without fighting a design system.',
+    description: 'Utility-first CSS that scales. Combined with shadcn/ui and a customizable theme.',
     href: 'https://tailwindcss.com/',
   },
   {
@@ -71,18 +70,9 @@ function About() {
         <div className="flex flex-col gap-3">
           <h1 className="text-3xl font-bold">About scp-app</h1>
           <p className="text-muted-foreground">
-            scp-app is a fullstack TypeScript monorepo template built by{' '}
-            <a
-              href="https://github.com/SamPetering"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              me
-            </a>{' '}
-            as a personal starting point for web apps. Rather than spending the first days of a new
-            project wiring up auth, a database, deployments, and a component library, this template
-            has all of that ready to go — opinionated but easy to adapt.
+            scp-app is a fullstack TypeScript monorepo template. Rather than spending the first days
+            of a new project wiring up auth, a database, deployments, and a component library, this
+            template has all of that ready to go — opinionated but easy to adapt.
           </p>
           <p className="text-muted-foreground">
             The goal is a stack that stays out of your way: end-to-end type safety, a great

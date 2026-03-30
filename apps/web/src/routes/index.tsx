@@ -5,6 +5,7 @@ import { InputField } from '@/components/InputField';
 import { PageLayout } from '@/components/PageLayout';
 import { Button } from '@/components/ui/button';
 import useClipboard from '@/hooks/useClipboard';
+import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -25,48 +26,57 @@ function Index() {
 
   return (
     <PageLayout className="items-center">
-      <div className="flex w-full max-w-3xl flex-col gap-8">
+      <div className="flex w-full max-w-4xl flex-col items-center gap-8">
         {/* Header */}
-        <div className="flex flex-col gap-3 rounded-b-xl border border-t-0 bg-muted/40 p-8 px-6 text-center">
-          <h1 className="text-4xl font-bold">scp-app</h1>
-          <p className="text-lg text-balance text-muted-foreground">
-            Fullstack monorepo template — Fastify API + Vite/React frontend with auth, a database,
-            and deployment configs ready to go.
-          </p>
-          <div className="flex flex-wrap justify-center gap-1.5">
-            {[
-              'Node.js',
-              'Fastify',
-              'Drizzle ORM',
-              'Neon',
-              'Clerk',
-              'Vite',
-              'React',
-              'TypeScript',
-              'Railway',
-              'Cloudflare Pages',
-            ].map((tech) => (
-              <span
-                key={tech}
-                className="rounded-md border bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+        <div className="relative z-1 bg-background">
+          <div className="border-animation" />
+          <div className="rounded-b-xl bg-background">
+            <div
+              className={
+                'mx-auto flex max-w-3xl flex-col gap-3 rounded-b-xl border border-t-0 bg-muted/40 p-8 px-6 text-center'
+              }
+            >
+              <h1 className="text-4xl font-bold">scp-app</h1>
+              <p className="text-lg text-balance text-muted-foreground">
+                Fullstack monorepo template — Fastify API + Vite/React frontend with auth, a
+                database, and deployment configs ready to go.
+              </p>
+              <div className="flex flex-wrap justify-center gap-1.5">
+                {[
+                  'Node.js',
+                  'Fastify',
+                  'Drizzle ORM',
+                  'Neon',
+                  'Clerk',
+                  'Vite',
+                  'React',
+                  'TypeScript',
+                  'Railway',
+                  'Cloudflare Pages',
+                ].map((tech) => (
+                  <span
+                    key={tech}
+                    className="rounded-md border bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+              <a
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mx-auto flex items-center gap-2 text-chart-3 hover:underline"
               >
-                {tech}
-              </span>
-            ))}
+                <GitHubIcon />
+                SamPetering/scp-app
+              </a>
+            </div>
           </div>
-          <a
-            href={GITHUB_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mx-auto flex items-center gap-2 text-primary hover:underline"
-          >
-            <GitHubIcon />
-            SamPetering/scp-app
-          </a>
         </div>
 
         {/* Getting started */}
-        <div className="flex flex-col gap-3">
+        <div className="flex max-w-3xl flex-col gap-3">
           <div className="flex items-center gap-3 border-b pb-4">
             <h2 className="text-xl font-semibold">Get started</h2>
             <InputField
@@ -157,7 +167,7 @@ function Step({
   return (
     <div className="flex gap-4">
       <div className="flex flex-col items-center">
-        <div className="flex size-6 shrink-0 items-center justify-center rounded-full border border-primary text-sm font-semibold text-primary">
+        <div className="flex size-6 shrink-0 items-center justify-center rounded-full border border-chart-2 text-sm font-semibold text-chart-2">
           {n}
         </div>
         {!isLast && <div className="mt-1 w-px grow bg-border" />}
