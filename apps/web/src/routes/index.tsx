@@ -5,7 +5,6 @@ import { InputField } from '@/components/InputField';
 import { PageLayout } from '@/components/PageLayout';
 import { Button } from '@/components/ui/button';
 import useClipboard from '@/hooks/useClipboard';
-import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/')({
   component: Index,

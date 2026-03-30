@@ -1,3 +1,4 @@
+// oxlint-disable no-console
 import './instrument.js';
 import * as Sentry from '@sentry/node';
 import Fastify from 'fastify';

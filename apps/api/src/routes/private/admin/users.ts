@@ -25,7 +25,6 @@ const users: FastifyPluginAsyncZod = async (fastify) => {
       },
     },
     async (req, reply) => {
-      console.log('patch');
       const updated = await setUserRoles(req.params.id, req.body.roles);
       reply.code(200).send(updated);
     },

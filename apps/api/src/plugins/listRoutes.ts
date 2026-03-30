@@ -1,3 +1,4 @@
+// oxlint-disable no-console
 import fp from 'fastify-plugin';
 import { getEnvironment } from '../utils/env.js';
 

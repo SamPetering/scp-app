@@ -1,3 +1,4 @@
+// oxlint-disable no-console
 export function getEnvironment() {
   return process.env.NODE_ENV === 'production'
     ? 'production'
