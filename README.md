@@ -2,6 +2,15 @@
 
 Fullstack monorepo template — Fastify API + Vite/React frontend.
 
+## Requirements
+
+| Tool                                        | Install                                                 | Notes                                               |
+| ------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------- |
+| [Node.js](https://nodejs.org) v20+          | `nvm install 20` ([nvm](https://github.com/nvm-sh/nvm)) | JavaScript runtime                                  |
+| [pnpm](https://pnpm.io)                     | `curl -fsSL https://get.pnpm.io/install.sh \| sh -`     | Faster, more disk-efficient alternative to npm/yarn |
+| [GitHub CLI](https://cli.github.com) (`gh`) | `brew install gh`                                       | Used for the one-liner repo create + push           |
+| [ngrok](https://ngrok.com) _(optional)_     | `brew install ngrok`                                    | Only needed to test Clerk webhooks locally          |
+
 ## Structure
 
 ```
@@ -33,6 +42,27 @@ See [`apps/api`](apps/api/README.md) and [`apps/web`](apps/web/README.md) for mo
 
 ---
 
+## Migrations
+
+Migrations are managed with Drizzle Kit. Schema files live in `apps/api/src/db/schema/`.
+
+**Local development**
+
+After changing the schema, generate a migration file and apply it to your local (`dev` branch) database:
+
+```sh
+cd apps/api
+pnpm db:generate   # generates a new migration file in apps/api/drizzle/
+pnpm db:migrate    # applies pending migrations using DATABASE_URL from .env
+```
+
+Commit the generated migration files alongside your schema changes.
+
+> **Production**
+> Migrations run automatically on every Railway deploy via the `preDeployCommand` in `railway.toml` (`pnpm db:migrate:remote`). This runs the compiled migrator against whatever Neon branch `DATABASE_URL` points to in your Railway environment before the new server starts. You do not need to run migrations manually in production.
+
+---
+
 ## Setup guide
 
 ### 1. Create external services
@@ -51,21 +81,21 @@ Clerk has separate dev and production instances with different keys (`pk_test_..
 
 Neon supports branch-based environments. Use `main` for production and a `dev` branch for local development so you can experiment freely without touching production data.
 
-1. Go to [neon.tech](https://neon.tech) and create a project.
+1. Go to [neon.com](https://neon.com) and create a project.
 2. In the Neon dashboard, create a `dev` branch from `main`.
-3. Copy the connection string for the `dev` branch — you'll use it locally in step 2. The `main` branch connection string is for production in step 3.
+3. Copy the connection string for the `dev` branch — you'll use it locally in step 2. The `main` branch connection string is for production in step 4.
 
 **Sentry** _(optional)_
 
 1. Go to [sentry.io](https://sentry.io) and create a Node.js project and a Browser (React) project.
-2. Copy both DSNs — you'll need them in steps 2 and 3.
+2. Copy both DSNs — you'll need them in steps 2 and 4.
 
 ---
 
 ### 2. Clone and init locally
 
 ```sh
-git clone https://github.com/you/scp-app my-project
+git clone https://github.com/SamPetering/scp-app my-project
 cd my-project
 node scripts/init.js
 ```
@@ -76,7 +106,8 @@ The init script will:
 2. Replace all occurrences of `scp-app` with your project name across the repo
 3. Delete `pnpm-lock.yaml` so it is regenerated with the new package names
 4. Copy `apps/api/.env.example` → `apps/api/.env` and `apps/web/.env.example` → `apps/web/.env`
-5. Self-delete (`scripts/init.js` is removed when done)
+5. Run `pnpm install` and `pnpm fmt`
+6. Self-delete (`scripts/init.js` is removed when done)
 
 Create a new GitHub repo and push:
 
@@ -99,7 +130,7 @@ Fill in your env files with **development** values (Clerk dev instance, Neon dev
 | ----------------------- | ----------------------------------------- |
 | `CLERK_PUBLISHABLE_KEY` | Clerk dev publishable key (`pk_test_...`) |
 | `CLERK_SECRET_KEY`      | Clerk dev secret key (`sk_test_...`)      |
-| `CLERK_WEBHOOK_SECRET`  | Leave blank for now — see step 4          |
+| `CLERK_WEBHOOK_SECRET`  | Leave blank for now — see step 5          |
 | `DATABASE_URL`          | Neon `dev` branch connection string       |
 | `SENTRY_DSN`            | Sentry Node.js DSN _(optional)_           |
 
@@ -111,25 +142,37 @@ Fill in your env files with **development** values (Clerk dev instance, Neon dev
 | `VITE_API_URL`               | `http://localhost:3000`                   |
 | `VITE_SENTRY_DSN`            | Sentry browser DSN _(optional)_           |
 
-Then install and run:
+Then run:
 
 ```sh
-pnpm install
 pnpm dev
 ```
 
+**Grant yourself admin (optional)**
+
+Sign in to the app locally at least once so your user is synced to the database, then run the following in the [Neon SQL editor](https://console.neon.tech) against your `dev` branch:
+
+```sql
+INSERT INTO users_role (user_id, role)
+SELECT id, 'admin'
+FROM users
+WHERE email = 'you@example.com';
+```
+
+Once you have admin access, you can grant other users admin from `/admin/users` in the app.
+
 ---
 
-### 3. Deploy to Railway and Cloudflare Pages
-
-**Clerk production instance**
-
-Before deploying, set up your Clerk production instance:
+### 3. Set up Clerk for production
 
 1. In the Clerk dashboard, switch to your production instance.
 2. Under **Configure → Domains**, add your domain and add the DNS records Clerk provides to Cloudflare. Set all Clerk DNS records to **DNS only (grey cloud)** — proxying them will break Clerk.
 3. If you have social login providers enabled (e.g. Google), go to **Configure → SSO Connections** and add your own OAuth credentials for each provider. Clerk uses shared credentials in development but requires your own in production.
-4. Copy your production API keys (`pk_live_...`, `sk_live_...`).
+4. Copy your production API keys (`pk_live_...`, `sk_live_...`) — you'll need them in step 4.
+
+---
+
+### 4. Deploy to Railway and Cloudflare Pages
 
 **Railway (API)**
 
@@ -142,7 +185,7 @@ Before deploying, set up your Clerk production instance:
    | `HOST`                  | `0.0.0.0`                            |
    | `CLERK_PUBLISHABLE_KEY` | `pk_live_...`                        |
    | `CLERK_SECRET_KEY`      | `sk_live_...`                        |
-   | `CLERK_WEBHOOK_SECRET`  | Leave blank for now — see step 4     |
+   | `CLERK_WEBHOOK_SECRET`  | Leave blank for now — see step 5     |
    | `DATABASE_URL`          | Neon `main` branch connection string |
    | `SENTRY_DSN`            | Sentry Node.js DSN _(optional)_      |
 
@@ -177,7 +220,7 @@ Before deploying, set up your Clerk production instance:
 
 ---
 
-### 4. Configure Clerk webhooks
+### 5. Configure Clerk webhooks
 
 The API syncs users to the database on `user.created`, `user.updated`, and `user.deleted` events via `POST /webhooks/clerk`.
 
@@ -206,9 +249,9 @@ Add a second webhook endpoint in Clerk (dev instance) pointing to your ngrok URL
 
 ---
 
-### 5. Grant yourself admin
+### 6. Grant yourself admin
 
-Sign in to the app at least once so your user is synced to the database, then run the following in the [Neon SQL editor](https://console.neon.tech):
+Sign in to the app at least once so your user is synced to the database, then run the following in the [Neon SQL editor](https://console.neon.tech) against your `main` branch:
 
 ```sql
 INSERT INTO users_role (user_id, role)

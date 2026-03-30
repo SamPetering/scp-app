@@ -71,6 +71,28 @@ function Index() {
   console.log('  updated  apps/web/src/routes/index.tsx (replaced with minimal template)');
 }
 
+// Replace about page with minimal template
+const aboutPath = path.join(root, 'apps/web/src/routes/about.tsx');
+if (fs.existsSync(aboutPath)) {
+  const about = `import { createFileRoute } from '@tanstack/react-router';
+import { PageLayout } from '@/components/PageLayout';
+
+export const Route = createFileRoute('/about')({
+  component: About,
+});
+
+function About() {
+  return (
+    <PageLayout className="items-center justify-center">
+      <h1 className="text-4xl font-bold">about</h1>
+    </PageLayout>
+  );
+}
+`;
+  fs.writeFileSync(aboutPath, about);
+  console.log('  updated  apps/web/src/routes/about.tsx (replaced with minimal template)');
+}
+
 // Clear TOS content — specific to this template
 const tosPath = path.join(root, 'apps/web/src/routes/tos.tsx');
 if (fs.existsSync(tosPath)) {

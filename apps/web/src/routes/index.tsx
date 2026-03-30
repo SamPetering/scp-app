@@ -1,10 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { CheckIcon, CopyIcon } from 'lucide-react';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { InputField } from '@/components/InputField';
 import { PageLayout } from '@/components/PageLayout';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import useClipboard from '@/hooks/useClipboard';
 
 export const Route = createFileRoute('/')({
@@ -25,19 +24,36 @@ function Index() {
   }
 
   return (
-    <PageLayout className="items-center justify-center">
+    <PageLayout className="items-center">
       <div className="flex w-full max-w-3xl flex-col gap-8">
         {/* Header */}
-        <div className="flex flex-col gap-3 text-center">
+        <div className="flex flex-col gap-3 rounded-b-xl border border-t-0 bg-muted/40 p-8 px-6 text-center">
           <h1 className="text-4xl font-bold">scp-app</h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-balance text-muted-foreground">
             Fullstack monorepo template — Fastify API + Vite/React frontend with auth, a database,
             and deployment configs ready to go.
           </p>
-          <p className="text-sm text-muted-foreground">
-            Node.js · Fastify · Drizzle ORM · Neon (Postgres) · Clerk · Vite · React · TypeScript ·
-            Railway · Cloudflare Pages
-          </p>
+          <div className="flex flex-wrap justify-center gap-1.5">
+            {[
+              'Node.js',
+              'Fastify',
+              'Drizzle ORM',
+              'Neon',
+              'Clerk',
+              'Vite',
+              'React',
+              'TypeScript',
+              'Railway',
+              'Cloudflare Pages',
+            ].map((tech) => (
+              <span
+                key={tech}
+                className="rounded-md border bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
           <a
             href={GITHUB_URL}
             target="_blank"
@@ -50,8 +66,8 @@ function Index() {
         </div>
 
         {/* Getting started */}
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-3 border-b pb-4">
             <h2 className="text-xl font-semibold">Get started</h2>
             <InputField
               inputProps={{
@@ -86,10 +102,10 @@ function Index() {
               <code className="rounded bg-muted px-1 text-xs">apps/api/.env</code> and{' '}
               <code className="rounded bg-muted px-1 text-xs">apps/web/.env</code>, then:
             </p>
-            <CodeBlock>{`pnpm install\npnpm dev`}</CodeBlock>
+            <CodeBlock>{`pnpm dev`}</CodeBlock>
           </Step>
 
-          <Step n={4} title="Deploy">
+          <Step n={4} title="Deploy" isLast>
             <p className="text-sm text-muted-foreground">
               Deploy the API to{' '}
               <a
@@ -127,13 +143,26 @@ function Index() {
   );
 }
 
-function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
+function Step({
+  n,
+  title,
+  children,
+  isLast = false,
+}: {
+  n: number;
+  title: string;
+  children: React.ReactNode;
+  isLast?: boolean;
+}) {
   return (
     <div className="flex gap-4">
-      <div className="flex size-6 shrink-0 items-center justify-center rounded-sm bg-primary text-sm font-semibold text-primary-foreground">
-        {n}
+      <div className="flex flex-col items-center">
+        <div className="flex size-6 shrink-0 items-center justify-center rounded-full border border-primary text-sm font-semibold text-primary">
+          {n}
+        </div>
+        {!isLast && <div className="mt-1 w-px grow bg-border" />}
       </div>
-      <div className="flex w-full flex-col gap-2">
+      <div className="flex w-full min-w-0 flex-col gap-2 pb-4">
         <p className="font-medium">{title}</p>
         {children}
       </div>
