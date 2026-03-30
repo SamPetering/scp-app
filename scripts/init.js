@@ -10,8 +10,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const root = path.resolve(__dirname, '..');
 
-const dryRun = process.argv.includes('--dryRun');
-
 const c = {
   bold: (s) => `\x1b[1m${s}\x1b[0m`,
   dim: (s) => `\x1b[2m${s}\x1b[0m`,
@@ -39,36 +37,7 @@ process.on('unhandledRejection', (err) => {
   process.exit(1);
 });
 
-// Check required tools
-for (const tool of ['pnpm', 'git', 'gh']) {
-  try {
-    execSync(`which ${tool}`, { stdio: 'ignore' });
-  } catch {
-    log.error(`"${tool}" is required but not found in PATH`);
-    process.exit(1);
-  }
-}
-
-// Ensure gh is authenticated
-try {
-  execSync('gh auth status', { stdio: 'ignore' });
-} catch {
-  log.warn('GitHub CLI is not authenticated — launching gh auth login...');
-  execSync('gh auth login', { stdio: 'inherit' });
-}
-
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-const defaultName = path.basename(root);
-const input = (await rl.question(`Project name (kebab-case) [${defaultName}]: `)).trim();
-rl.close();
-const name = input || defaultName;
-
-if (!/^[a-z][a-z0-9-]+$/.test(name)) {
-  log.error('Invalid name. Use lowercase letters, numbers, and hyphens (e.g. my-project).');
-  process.exit(1);
-}
-
-const OLD = 'scp-app';
+// ─── helpers ─────────────────────────────────────────────────────────────────
 
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.tanstack']);
 const SKIP_FILES = new Set(['pnpm-lock.yaml']);
@@ -83,27 +52,73 @@ function* walkFiles(dir) {
   }
 }
 
-log.step(`Renaming "${OLD}" → "${name}"...`);
+// ─── steps ───────────────────────────────────────────────────────────────────
 
-for (const filepath of walkFiles(root)) {
-  let before;
-  try {
-    before = fs.readFileSync(filepath, 'utf8');
-  } catch {
-    continue; // skip binary files
+function checkTools(withGh) {
+  const tools = withGh ? ['pnpm', 'git', 'gh'] : ['pnpm', 'git'];
+  for (const tool of tools) {
+    try {
+      execSync(`which ${tool}`, { stdio: 'ignore' });
+    } catch {
+      log.error(`"${tool}" is required but not found in PATH`);
+      process.exit(1);
+    }
   }
-  if (!before.includes(OLD)) continue;
-  const after = before.replaceAll(OLD, name);
-  if (!dryRun) fs.writeFileSync(filepath, after);
-  log.info(path.relative(root, filepath));
 }
 
-log.step('Applying templates...');
+function ensureGhAuth() {
+  try {
+    execSync('gh auth status', { stdio: 'ignore' });
+  } catch {
+    log.warn('GitHub CLI is not authenticated — launching gh auth login...');
+    execSync('gh auth login', { stdio: 'inherit' });
+  }
+}
 
-// Replace homepage with minimal template
-const indexPath = path.join(root, 'apps/web/src/routes/index.tsx');
-if (fs.existsSync(indexPath)) {
-  const homepage = `import { createFileRoute } from '@tanstack/react-router';
+async function promptSetupRepo() {
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  const input = (await rl.question('Create GitHub repository? (y/n) [y]: ')).trim().toLowerCase();
+  rl.close();
+  return input !== 'n';
+}
+
+async function promptName() {
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  const defaultName = path.basename(root);
+  const input = (await rl.question(`Project name (kebab-case) [${defaultName}]: `)).trim();
+  rl.close();
+  const name = input || defaultName;
+  if (!/^[a-z][a-z0-9-]+$/.test(name)) {
+    log.error('Invalid name. Use lowercase letters, numbers, and hyphens (e.g. my-project).');
+    process.exit(1);
+  }
+  return name;
+}
+
+function renameProject(name, dryRun) {
+  const OLD = 'scp-app';
+  log.step(`Renaming "${OLD}" → "${name}"...`);
+  for (const filepath of walkFiles(root)) {
+    let before;
+    try {
+      before = fs.readFileSync(filepath, 'utf8');
+    } catch {
+      continue; // skip binary files
+    }
+    if (!before.includes(OLD)) continue;
+    const after = before.replaceAll(OLD, name);
+    if (!dryRun) fs.writeFileSync(filepath, after);
+    log.info(path.relative(root, filepath));
+  }
+}
+
+function applyPageTemplates(name, dryRun) {
+  log.step('Applying templates...');
+
+  const pages = [
+    {
+      relPath: 'apps/web/src/routes/index.tsx',
+      content: `import { createFileRoute } from '@tanstack/react-router';
 import { PageLayout } from '@/components/PageLayout';
 
 export const Route = createFileRoute('/')({
@@ -117,15 +132,11 @@ function Index() {
     </PageLayout>
   );
 }
-`;
-  if (!dryRun) fs.writeFileSync(indexPath, homepage);
-  log.info('apps/web/src/routes/index.tsx');
-}
-
-// Replace about page with minimal template
-const aboutPath = path.join(root, 'apps/web/src/routes/about.tsx');
-if (fs.existsSync(aboutPath)) {
-  const about = `import { createFileRoute } from '@tanstack/react-router';
+`,
+    },
+    {
+      relPath: 'apps/web/src/routes/about.tsx',
+      content: `import { createFileRoute } from '@tanstack/react-router';
 import { PageLayout } from '@/components/PageLayout';
 
 export const Route = createFileRoute('/about')({
@@ -139,15 +150,11 @@ function About() {
     </PageLayout>
   );
 }
-`;
-  if (!dryRun) fs.writeFileSync(aboutPath, about);
-  log.info('apps/web/src/routes/about.tsx');
-}
-
-// Replace TOS with minimal template
-const tosPath = path.join(root, 'apps/web/src/routes/tos.tsx');
-if (fs.existsSync(tosPath)) {
-  const tos = `import { createFileRoute } from '@tanstack/react-router';
+`,
+    },
+    {
+      relPath: 'apps/web/src/routes/tos.tsx',
+      content: `import { createFileRoute } from '@tanstack/react-router';
 import { PageLayout } from '@/components/PageLayout';
 
 export const Route = createFileRoute('/tos')({
@@ -163,15 +170,11 @@ function Tos() {
     </PageLayout>
   );
 }
-`;
-  if (!dryRun) fs.writeFileSync(tosPath, tos);
-  log.info('apps/web/src/routes/tos.tsx');
-}
-
-// Replace privacy policy with minimal template
-const privacyPath = path.join(root, 'apps/web/src/routes/privacy.tsx');
-if (fs.existsSync(privacyPath)) {
-  const privacy = `import { createFileRoute } from '@tanstack/react-router';
+`,
+    },
+    {
+      relPath: 'apps/web/src/routes/privacy.tsx',
+      content: `import { createFileRoute } from '@tanstack/react-router';
 import { PageLayout } from '@/components/PageLayout';
 
 export const Route = createFileRoute('/privacy')({
@@ -187,62 +190,157 @@ function Privacy() {
     </PageLayout>
   );
 }
-`;
-  if (!dryRun) fs.writeFileSync(privacyPath, privacy);
-  log.info('apps/web/src/routes/privacy.tsx');
-}
+`,
+    },
+  ];
 
-log.step('Preparing environment...');
-
-// Delete lockfile — package names changed, must regenerate
-const lockfile = path.join(root, 'pnpm-lock.yaml');
-if (fs.existsSync(lockfile)) {
-  if (!dryRun) fs.unlinkSync(lockfile);
-  log.info('deleted pnpm-lock.yaml (will be regenerated)');
-}
-
-// Copy .env.example → .env (skip if .env already exists)
-for (const envExample of [
-  path.join(root, 'apps/api/.env.example'),
-  path.join(root, 'apps/web/.env.example'),
-]) {
-  const dest = envExample.replace('.env.example', '.env');
-  if (!fs.existsSync(dest)) {
-    if (!dryRun) fs.copyFileSync(envExample, dest);
-    log.info(`created ${path.relative(root, dest)}`);
+  for (const { relPath, content } of pages) {
+    const fullPath = path.join(root, relPath);
+    if (!fs.existsSync(fullPath)) continue;
+    if (!dryRun) fs.writeFileSync(fullPath, content);
+    log.info(relPath);
   }
 }
 
-let installOk = true;
-if (!dryRun) {
-  log.step('Installing dependencies...');
-  try {
-    execSync('pnpm install', { cwd: root, stdio: 'inherit' });
-  } catch {
-    installOk = false;
-    log.warn('pnpm install failed');
+function applyReadmes(name, dryRun) {
+  const SCAFFOLD_URL = 'https://github.com/SamPetering/scp-app';
+
+  const readmes = [
+    {
+      relPath: 'README.md',
+      content: `# ${name}
+
+> Scaffolded from [scp-app](${SCAFFOLD_URL}). See the repo for full setup instructions.
+
+## Structure
+
+\`\`\`
+${name}/
+├── apps/
+│   ├── api/      # Fastify REST API
+│   └── web/      # Vite + React frontend
+└── packages/
+    └── shared/   # Shared Zod types
+\`\`\`
+
+## Stack
+
+- **API** — Node.js, Fastify, Drizzle ORM, Neon Postgres, Clerk, Zod
+- **Web** — React 19, Vite, TanStack Router & Query, Tailwind CSS, shadcn/ui, Clerk
+- **Shared** — Zod schemas and types
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| \`pnpm dev\` | Start all apps in watch mode |
+| \`pnpm build\` | Build all apps |
+| \`pnpm check\` | Lint + typecheck all packages |
+| \`pnpm fmt\` | Format all packages |
+`,
+    },
+    {
+      relPath: 'apps/api/README.md',
+      content: `# ${name}/api
+
+> Scaffolded from [scp-app](${SCAFFOLD_URL}). See the repo for full setup instructions.
+
+## Stack
+
+Node.js · Fastify · Drizzle ORM · Neon Postgres · Clerk · Zod
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| \`pnpm dev\` | Start with hot reload |
+| \`pnpm build\` | Compile to \`dist/\` |
+| \`pnpm start\` | Run compiled output |
+| \`pnpm test\` | Run tests |
+| \`pnpm check\` | Lint + typecheck + test |
+| \`pnpm db:generate\` | Generate Drizzle migrations |
+| \`pnpm db:migrate\` | Apply migrations locally |
+`,
+    },
+    {
+      relPath: 'apps/web/README.md',
+      content: `# ${name}/web
+
+> Scaffolded from [scp-app](${SCAFFOLD_URL}). See the repo for full setup instructions.
+
+## Stack
+
+React 19 · Vite · TanStack Router · TanStack Query · Tailwind CSS · shadcn/ui · Clerk
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| \`pnpm dev\` | Start Vite dev server |
+| \`pnpm build\` | Typecheck + build |
+| \`pnpm preview\` | Preview production build |
+| \`pnpm check\` | Lint + typecheck |
+`,
+    },
+  ];
+
+  for (const { relPath, content } of readmes) {
+    if (!dryRun) fs.writeFileSync(path.join(root, relPath), content);
+    log.info(relPath);
+  }
+}
+
+function prepareEnv(dryRun) {
+  log.step('Preparing environment...');
+
+  const lockfile = path.join(root, 'pnpm-lock.yaml');
+  if (fs.existsSync(lockfile)) {
+    if (!dryRun) fs.unlinkSync(lockfile);
+    log.info('deleted pnpm-lock.yaml (will be regenerated)');
   }
 
-  if (installOk) {
-    log.step('Formatting...');
-    try {
-      execSync('pnpm fmt', { cwd: root, stdio: 'inherit' });
-    } catch {
-      log.warn('pnpm fmt failed, skipping');
+  for (const envExample of [
+    path.join(root, 'apps/api/.env.example'),
+    path.join(root, 'apps/web/.env.example'),
+  ]) {
+    const dest = envExample.replace('.env.example', '.env');
+    if (!fs.existsSync(dest)) {
+      if (!dryRun) fs.copyFileSync(envExample, dest);
+      log.info(`created ${path.relative(root, dest)}`);
     }
   }
 }
 
-if (!dryRun) {
-  // Self-delete
+function install() {
+  log.step('Installing dependencies...');
+  try {
+    execSync('pnpm install', { cwd: root, stdio: 'inherit' });
+    return true;
+  } catch {
+    log.warn('pnpm install failed');
+    return false;
+  }
+}
+
+function format() {
+  log.step('Formatting...');
+  try {
+    execSync('pnpm fmt', { cwd: root, stdio: 'inherit' });
+  } catch {
+    log.warn('pnpm fmt failed, skipping');
+  }
+}
+
+function selfDelete() {
   fs.unlinkSync(__filename);
   try {
     fs.rmdirSync(__dirname);
   } catch {
     /* scripts/ not empty, leave it */
   }
+}
 
-  // Reset git history and push initial commit
+function setupRepo(name) {
   log.step('Setting up repository...');
   fs.rmSync(path.join(root, '.git'), { recursive: true, force: true });
   execSync('git init', { cwd: root, stdio: 'inherit' });
@@ -256,14 +354,45 @@ if (!dryRun) {
   }
 }
 
-console.log(`\n${c.green(c.bold('✓'))} ${c.bold(`Project initialized as "${name}"`)}`);
-console.log(`\n${c.bold('Next steps:')}`);
-console.log(
-  `  1. Fill in ${c.cyan('apps/api/.env')} and ${c.cyan('apps/web/.env')} with your keys`,
-);
-if (installOk) {
-  console.log(`  2. ${c.cyan('pnpm dev')}`);
-} else {
-  console.log(`  2. ${c.cyan('pnpm install')}`);
-  console.log(`  3. ${c.cyan('pnpm dev')}`);
+function printDone(name, installOk, createRepo) {
+  console.log(`\n${c.green(c.bold('✓'))} ${c.bold(`Project initialized as "${name}"`)}`);
+  console.log(`\n${c.bold('Next steps:')}`);
+  console.log(
+    `  1. Fill in ${c.cyan('apps/api/.env')} and ${c.cyan('apps/web/.env')} with your keys`,
+  );
+  if (installOk) {
+    console.log(`  2. ${c.cyan('pnpm dev')}`);
+  } else {
+    let step = 2;
+    console.log(`  ${step++}. ${c.cyan('pnpm install')}`);
+    console.log(`  ${step++}. ${c.cyan('pnpm fmt')}`);
+    if (createRepo)
+      console.log(`  ${step++}. ${c.cyan(`gh repo create ${name} --private --source=. --push`)}`);
+    console.log(`  ${step++}. ${c.cyan('pnpm dev')}`);
+  }
 }
+
+// ─── main ────────────────────────────────────────────────────────────────────
+
+const dryRun = process.argv.includes('--dryRun');
+
+const name = await promptName();
+const createRepo = await promptSetupRepo();
+
+checkTools(createRepo);
+if (createRepo) ensureGhAuth();
+
+renameProject(name, dryRun);
+applyPageTemplates(name, dryRun);
+applyReadmes(name, dryRun);
+prepareEnv(dryRun);
+
+let installOk = true;
+if (!dryRun) {
+  installOk = install();
+  if (installOk) format();
+  selfDelete();
+  if (installOk && createRepo) setupRepo(name);
+}
+
+printDone(name, installOk, createRepo);
