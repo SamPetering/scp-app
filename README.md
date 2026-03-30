@@ -30,13 +30,15 @@ packages/
 
 ## Scripts
 
-| Command          | Description                      |
-| ---------------- | -------------------------------- |
-| `pnpm dev:api`   | Start the API dev server         |
-| `pnpm dev:web`   | Start the web dev server         |
-| `pnpm build`     | Build all apps                   |
-| `pnpm fmt`       | Format all files with oxfmt      |
-| `pnpm fmt:check` | Check formatting without writing |
+| Command          | Description                                  |
+| ---------------- | -------------------------------------------- |
+| `pnpm dev`       | Start API and web dev servers                |
+| `pnpm dev:api`   | Start the API dev server                     |
+| `pnpm dev:web`   | Start the web dev server                     |
+| `pnpm build`     | Build all apps                               |
+| `pnpm fmt`       | Format all files with oxfmt                  |
+| `pnpm fmt:check` | Check formatting without writing             |
+| `pnpm check`     | Run type + lint + fmt checks across all apps |
 
 See [`apps/api`](apps/api/README.md) and [`apps/web`](apps/web/README.md) for more detail.
 
@@ -188,6 +190,8 @@ Once you have admin access, you can grant other users admin from `/admin/users` 
    | `CLERK_WEBHOOK_SECRET`  | Leave blank for now — see step 5     |
    | `DATABASE_URL`          | Neon `main` branch connection string |
    | `SENTRY_DSN`            | Sentry Node.js DSN _(optional)_      |
+
+   > Railway injects `PORT` automatically — do not add it manually.
 
 3. Add a custom domain under **Settings → Networking → Custom Domain** (e.g. `api.your-domain.com`). Railway will provide a CNAME and TXT record — add both to Cloudflare DNS as **DNS only (grey cloud)**.
 4. Railway will deploy automatically on push to `main`. Build, migration, and start commands are configured in [`railway.toml`](railway.toml).

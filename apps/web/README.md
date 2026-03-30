@@ -34,7 +34,7 @@ pnpm dev
 | `pnpm dev`     | Start Vite dev server           |
 | `pnpm build`   | Type-check and build to `dist/` |
 | `pnpm preview` | Preview the production build    |
-| `pnpm check`   | Lint, format check, and build   |
+| `pnpm check`   | Run type + lint + fmt checks    |
 
 ## Deployment (Cloudflare Pages)
 
