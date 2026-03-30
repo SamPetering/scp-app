@@ -93,32 +93,52 @@ function About() {
   console.log('  updated  apps/web/src/routes/about.tsx (replaced with minimal template)');
 }
 
-// Clear TOS content — specific to this template
+// Replace TOS with minimal template
 const tosPath = path.join(root, 'apps/web/src/routes/tos.tsx');
 if (fs.existsSync(tosPath)) {
-  const tos = fs.readFileSync(tosPath, 'utf8');
-  const updated = tos.replace(
-    /<ol[\s\S]*?<\/ol>/,
-    '<ol className="list-decimal space-y-3 pl-5">\n            {/* Add your terms here */}\n          </ol>',
+  const tos = `import { createFileRoute } from '@tanstack/react-router';
+import { PageLayout } from '@/components/PageLayout';
+
+export const Route = createFileRoute('/tos')({
+  component: Tos,
+});
+
+function Tos() {
+  return (
+    <PageLayout className="px-6 py-16">
+      <div className="mx-auto w-full max-w-2xl">
+        <h1 className="mb-8 text-2xl font-bold">Terms of Service</h1>
+      </div>
+    </PageLayout>
   );
-  if (updated !== tos) {
-    fs.writeFileSync(tosPath, updated);
-    console.log('  updated  apps/web/src/routes/tos.tsx (cleared terms list)');
-  }
+}
+`;
+  fs.writeFileSync(tosPath, tos);
+  console.log('  updated  apps/web/src/routes/tos.tsx (replaced with minimal template)');
 }
 
-// Remove contact section from privacy policy — specific to this template's repo
+// Replace privacy policy with minimal template
 const privacyPath = path.join(root, 'apps/web/src/routes/privacy.tsx');
 if (fs.existsSync(privacyPath)) {
-  const privacy = fs.readFileSync(privacyPath, 'utf8');
-  const updated = privacy.replace(
-    /\n\n\s+<section className="space-y-2">\s+<h2[^>]+>Contact<\/h2>[\s\S]*?<\/section>/,
-    '',
+  const privacy = `import { createFileRoute } from '@tanstack/react-router';
+import { PageLayout } from '@/components/PageLayout';
+
+export const Route = createFileRoute('/privacy')({
+  component: Privacy,
+});
+
+function Privacy() {
+  return (
+    <PageLayout className="px-6 py-16">
+      <div className="mx-auto w-full max-w-2xl">
+        <h1 className="mb-8 text-2xl font-bold">Privacy Policy</h1>
+      </div>
+    </PageLayout>
   );
-  if (updated !== privacy) {
-    fs.writeFileSync(privacyPath, updated);
-    console.log('  updated  apps/web/src/routes/privacy.tsx (removed contact section)');
-  }
+}
+`;
+  fs.writeFileSync(privacyPath, privacy);
+  console.log('  updated  apps/web/src/routes/privacy.tsx (replaced with minimal template)');
 }
 
 // Delete lockfile — package names changed, must regenerate
