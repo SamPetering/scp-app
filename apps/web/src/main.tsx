@@ -3,10 +3,11 @@ import './index.css';
 import { useAuth } from '@clerk/react';
 import { ClerkProvider } from '@clerk/react';
 import { shadcn } from '@clerk/ui/themes';
+import { TanStackDevtools } from '@tanstack/react-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { LoaderCircleIcon } from 'lucide-react';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
@@ -54,8 +55,18 @@ if (!rootElement.innerHTML) {
         <ClerkProvider appearance={{ theme: shadcn }} publishableKey={PUBLISHABLE_KEY}>
           <InnerApp />
         </ClerkProvider>
-        <ReactQueryDevtools />
-        <TanStackRouterDevtools router={router} />
+        <TanStackDevtools
+          plugins={[
+            {
+              name: 'TanStack Query',
+              render: <ReactQueryDevtoolsPanel />,
+            },
+            {
+              name: 'TanStack Router',
+              render: <TanStackRouterDevtoolsPanel router={router} />,
+            },
+          ]}
+        />
       </QueryClientProvider>
     </StrictMode>,
   );
