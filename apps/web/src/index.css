@@ -136,9 +136,9 @@
 }
 
 .border-animation {
-  @apply absolute -inset-1 -z-1 rounded-b-2xl;
+  @apply absolute -inset-1 -z-1 rounded-2xl;
   background-image: conic-gradient(
-    from var(--angle) at 50% 0%,
+    from var(--angle),
     var(--primary),
     var(--chart-4),
     var(--chart-5),

@@ -64,14 +64,14 @@ const STACK: { name: string; description: string; href: string }[] = [
 
 function About() {
   return (
-    <PageLayout className="items-center pb-4">
+    <PageLayout className="items-center justify-center pb-4">
       <div className="flex w-full max-w-3xl flex-col gap-8">
         {/* Intro */}
         <div className="relative z-1 bg-background">
           <div className="border-animation" />
 
-          <div className="rounded-b-xl bg-background">
-            <div className="flex flex-col gap-3 rounded-b-xl bg-muted/10 px-6 py-8">
+          <div className="rounded-xl bg-background">
+            <div className="flex flex-col gap-3 rounded-xl bg-muted/10 px-6 py-8">
               <h1 className="text-center text-4xl font-bold">About</h1>
               <p className="text-center text-muted-foreground">
                 scp-app is a fullstack TypeScript monorepo template. Rather than spending the first
@@ -86,7 +86,6 @@ function About() {
             </div>
           </div>
         </div>
-
         {/* Stack */}
         <div className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold">The stack</h2>

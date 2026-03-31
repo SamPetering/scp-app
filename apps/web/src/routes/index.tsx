@@ -29,8 +29,8 @@ function Index() {
         {/* Header */}
         <div className="relative z-1 bg-background">
           <div className="border-animation" />
-          <div className="rounded-b-xl bg-background">
-            <div className="flex flex-col gap-3 rounded-b-xl border border-t-0 bg-muted/10 px-6 py-8 text-center">
+          <div className="rounded-xl bg-background">
+            <div className="flex flex-col gap-3 rounded-xl border border-t-0 bg-muted/10 px-6 py-8 text-center">
               <h1 className="text-4xl font-bold">scp-app</h1>
               <p className="text-lg text-balance text-muted-foreground">
                 Fullstack monorepo template — Fastify API + Vite/React frontend with auth, a
@@ -71,9 +71,9 @@ function Index() {
         </div>
 
         {/* Getting started */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-3 border-b pb-4">
-            <h2 className="text-xl font-semibold">Get started</h2>
+        <div className="flex w-full flex-col gap-3">
+          <div className="flex flex-col items-center gap-3 border-b pb-4 sm:flex-row">
+            <h2 className="w-full text-xl font-semibold">Get started</h2>
             <InputField
               inputProps={{
                 type: 'text',
@@ -82,7 +82,7 @@ function Index() {
                 placeholder: 'my-project',
                 id: 'project-name',
               }}
-              className="ml-auto max-w-64"
+              className="ml-auto sm:max-w-64"
             />
           </div>
 
@@ -163,7 +163,7 @@ function Step({
         </div>
         {!isLast && <div className="mt-1 w-px grow bg-border" />}
       </div>
-      <div className="flex w-full min-w-0 flex-col gap-2 pb-4">
+      <div className="flex w-full flex-col gap-2 pb-4">
         <p className="font-medium">{title}</p>
         {children}
       </div>
@@ -175,7 +175,7 @@ function CodeBlock({ children }: { children: string }) {
   const { copy, copied } = useClipboard();
   return (
     <div className="relative w-full">
-      <pre className="w-full overflow-x-auto rounded-md bg-muted px-4 py-3 pr-10 text-sm text-wrap">
+      <pre className="w-full rounded-md bg-muted px-4 py-3 pr-10 text-sm text-wrap break-all">
         <code>{children}</code>
       </pre>
       <Button

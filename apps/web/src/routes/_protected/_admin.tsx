@@ -2,6 +2,7 @@ import { Link, Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 import { LayoutDashboard, Users } from 'lucide-react';
 import { LeftNavLayout } from '@/components/LeftNavLayout';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/_protected/_admin')({
   beforeLoad: async ({ context }) => {
@@ -19,29 +20,34 @@ const navItems = [
 function AdminLayout() {
   return (
     <LeftNavLayout
-      nav={
+      nav={(collapsed) => (
         <>
-          <p className="px-2 py-1 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            Admin
-          </p>
-          <Separator className="mb-1" />
+          {!collapsed && (
+            <>
+              <p className="px-2 py-1 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                Admin
+              </p>
+              <Separator className="mb-1" />
+            </>
+          )}
           {navItems.map(({ to, label, icon: Icon }) => (
             <Link
               key={to}
               to={to}
               activeOptions={{ exact: to === '/admin' }}
-              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-              activeProps={{
-                className:
-                  'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm bg-accent text-accent-foreground font-medium transition-colors',
-              }}
+              className={cn(
+                'flex items-center rounded-md p-2 text-sm text-muted-foreground transition-colors',
+                'hover:bg-accent hover:text-accent-foreground',
+                '[&.active]:bg-accent [&.active]:font-medium [&.active]:text-accent-foreground',
+                collapsed ? 'mx-auto size-8 justify-center' : 'gap-2',
+              )}
             >
-              <Icon size={16} />
-              {label}
+              <Icon size={16} className="shrink-0" />
+              {!collapsed && label}
             </Link>
           ))}
         </>
-      }
+      )}
     >
       <Outlet />
     </LeftNavLayout>

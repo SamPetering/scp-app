@@ -11,8 +11,8 @@ function Me() {
   if (!me) return null;
 
   return (
-    <PageLayout className="p-8">
-      <h1 className="mb-4 text-2xl font-bold">me</h1>
+    <PageLayout>
+      <h1 className="mb-4 w-full text-2xl font-bold">me</h1>
       <dl className="space-y-2">
         <div>
           <dt className="text-sm text-muted-foreground">name</dt>
