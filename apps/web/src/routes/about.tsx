@@ -67,7 +67,7 @@ function About() {
   return (
     <PageLayout className="items-center justify-center pb-4">
       <div className="flex w-full max-w-3xl flex-col gap-8">
-        <HeroCard title="About">
+        <HeroCard title="about">
           <p className="text-center text-muted-foreground">
             scp-app is a fullstack TypeScript monorepo template. Rather than spending the first days
             of a new project wiring up auth, a database, deployments, and a component library, this
