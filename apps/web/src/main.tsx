@@ -55,7 +55,7 @@ if (!rootElement.innerHTML) {
           <InnerApp />
         </ClerkProvider>
         <ReactQueryDevtools />
-        <TanStackRouterDevtools position="bottom-right" router={router} />
+        <TanStackRouterDevtools router={router} />
       </QueryClientProvider>
     </StrictMode>,
   );
