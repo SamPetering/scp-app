@@ -95,27 +95,10 @@ async function promptName() {
   return name;
 }
 
-function renameProject(name, dryRun) {
-  const OLD = 'scp-app';
-  log.step(`Renaming "${OLD}" → "${name}"...`);
-  for (const filepath of walkFiles(root)) {
-    let before;
-    try {
-      before = fs.readFileSync(filepath, 'utf8');
-    } catch {
-      continue; // skip binary files
-    }
-    if (!before.includes(OLD)) continue;
-    const after = before.replaceAll(OLD, name);
-    if (!dryRun) fs.writeFileSync(filepath, after);
-    log.info(path.relative(root, filepath));
-  }
-}
+const SCAFFOLD_URL = 'https://github.com/SamPetering/scp-app';
 
-function applyPageTemplates(name, dryRun) {
-  log.step('Applying templates...');
-
-  const pages = [
+function getTemplates(name) {
+  return [
     {
       relPath: 'apps/web/src/routes/index.tsx',
       content: `import { createFileRoute } from '@tanstack/react-router';
@@ -192,9 +175,6 @@ function Privacy() {
 }
 `,
     },
-  ];
-
-  const htmlFiles = [
     {
       relPath: 'apps/web/index.html',
       content: `<!doctype html>
@@ -220,26 +200,6 @@ function Privacy() {
 </html>
 `,
     },
-  ];
-
-  for (const { relPath, content } of pages) {
-    const fullPath = path.join(root, relPath);
-    if (!fs.existsSync(fullPath)) continue;
-    if (!dryRun) fs.writeFileSync(fullPath, content);
-    log.info(relPath);
-  }
-
-  for (const { relPath, content } of htmlFiles) {
-    const fullPath = path.join(root, relPath);
-    if (!dryRun) fs.writeFileSync(fullPath, content);
-    log.info(relPath);
-  }
-}
-
-function applyReadmes(name, dryRun) {
-  const SCAFFOLD_URL = 'https://github.com/SamPetering/scp-app';
-
-  const readmes = [
     {
       relPath: 'README.md',
       content: `# ${name}
@@ -317,8 +277,30 @@ React 19 · Vite · TanStack Router · TanStack Query · Tailwind CSS · shadcn/
 `,
     },
   ];
+}
 
-  for (const { relPath, content } of readmes) {
+function renameProject(name, dryRun) {
+  const OLD = 'scp-app';
+  const templatedPaths = new Set(getTemplates(name).map((t) => t.relPath));
+  log.step(`Renaming "${OLD}" → "${name}"...`);
+  for (const filepath of walkFiles(root)) {
+    if (templatedPaths.has(path.relative(root, filepath))) continue;
+    let before;
+    try {
+      before = fs.readFileSync(filepath, 'utf8');
+    } catch {
+      continue; // skip binary files
+    }
+    if (!before.includes(OLD)) continue;
+    const after = before.replaceAll(OLD, name);
+    if (!dryRun) fs.writeFileSync(filepath, after);
+    log.info(path.relative(root, filepath));
+  }
+}
+
+function applyTemplates(name, dryRun) {
+  log.step('Applying templates...');
+  for (const { relPath, content } of getTemplates(name)) {
     if (!dryRun) fs.writeFileSync(path.join(root, relPath), content);
     log.info(relPath);
   }
@@ -417,8 +399,7 @@ checkTools(createRepo);
 if (createRepo) ensureGhAuth();
 
 renameProject(name, dryRun);
-applyPageTemplates(name, dryRun);
-applyReadmes(name, dryRun);
+applyTemplates(name, dryRun);
 prepareEnv(dryRun);
 
 let installOk = true;
