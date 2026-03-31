@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { HeroCard } from '@/components/HeroCard';
 import { PageLayout } from '@/components/PageLayout';
 
 export const Route = createFileRoute('/about')({
@@ -66,27 +67,19 @@ function About() {
   return (
     <PageLayout className="items-center justify-center pb-4">
       <div className="flex w-full max-w-3xl flex-col gap-8">
-        {/* Intro */}
-        <div className="relative z-1 bg-background">
-          <div className="border-animation" />
+        <HeroCard title="About">
+          <p className="text-center text-muted-foreground">
+            scp-app is a fullstack TypeScript monorepo template. Rather than spending the first days
+            of a new project wiring up auth, a database, deployments, and a component library, this
+            template has all of that ready to go — opinionated but easy to adapt.
+          </p>
+          <p className="text-center text-muted-foreground">
+            The goal is a stack that stays out of your way: end-to-end type safety, a great
+            developer experience, and zero-friction deployments. Clone it, run the init script, and
+            start building the thing that actually matters.
+          </p>
+        </HeroCard>
 
-          <div className="rounded-xl bg-background">
-            <div className="flex flex-col gap-3 rounded-xl bg-muted/10 px-6 py-8">
-              <h1 className="text-center text-4xl font-bold">About</h1>
-              <p className="text-center text-muted-foreground">
-                scp-app is a fullstack TypeScript monorepo template. Rather than spending the first
-                days of a new project wiring up auth, a database, deployments, and a component
-                library, this template has all of that ready to go — opinionated but easy to adapt.
-              </p>
-              <p className="text-center text-muted-foreground">
-                The goal is a stack that stays out of your way: end-to-end type safety, a great
-                developer experience, and zero-friction deployments. Clone it, run the init script,
-                and start building the thing that actually matters.
-              </p>
-            </div>
-          </div>
-        </div>
-        {/* Stack */}
         <div className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold">The stack</h2>
           <div className="grid gap-3 sm:grid-cols-2">

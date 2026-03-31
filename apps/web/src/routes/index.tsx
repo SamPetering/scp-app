@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { CheckIcon, CopyIcon } from 'lucide-react';
 import { useState } from 'react';
+import { HeroCard } from '@/components/HeroCard';
 import { InputField } from '@/components/InputField';
 import { PageLayout } from '@/components/PageLayout';
 import { Button } from '@/components/ui/button';
@@ -27,48 +28,42 @@ function Index() {
     <PageLayout className="items-center">
       <div className="flex w-full max-w-3xl flex-col items-center gap-8">
         {/* Header */}
-        <div className="relative z-1 bg-background">
-          <div className="border-animation" />
-          <div className="rounded-xl bg-background">
-            <div className="flex flex-col gap-3 rounded-xl border border-t-0 bg-muted/10 px-6 py-8 text-center">
-              <h1 className="text-4xl font-bold">scp-app</h1>
-              <p className="text-lg text-balance text-muted-foreground">
-                Fullstack monorepo template — Fastify API + Vite/React frontend with auth, a
-                database, and deployment configs ready to go.
-              </p>
-              <div className="flex flex-wrap justify-center gap-1.5">
-                {[
-                  'Node.js',
-                  'Fastify',
-                  'Drizzle ORM',
-                  'Neon',
-                  'Clerk',
-                  'Vite',
-                  'React',
-                  'TypeScript',
-                  'Railway',
-                  'Cloudflare Pages',
-                ].map((tech) => (
-                  <span
-                    key={tech}
-                    className="rounded-md border bg-muted px-2 py-0.5 text-xs text-muted-foreground"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-              <a
-                href={GITHUB_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mx-auto flex items-center gap-2 text-chart-3 hover:underline"
+        <HeroCard title="scp-app">
+          <p className="text-lg text-balance text-muted-foreground">
+            Fullstack monorepo template — Fastify API + Vite/React frontend with auth, a database,
+            and deployment configs ready to go.
+          </p>
+          <div className="flex flex-wrap justify-center gap-1.5">
+            {[
+              'Node.js',
+              'Fastify',
+              'Drizzle ORM',
+              'Neon',
+              'Clerk',
+              'Vite',
+              'React',
+              'TypeScript',
+              'Railway',
+              'Cloudflare Pages',
+            ].map((tech) => (
+              <span
+                key={tech}
+                className="rounded-md border bg-muted px-2 py-0.5 text-xs text-muted-foreground"
               >
-                <GitHubIcon />
-                SamPetering/scp-app
-              </a>
-            </div>
+                {tech}
+              </span>
+            ))}
           </div>
-        </div>
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mx-auto flex items-center gap-2 text-chart-3 hover:underline"
+          >
+            <GitHubIcon />
+            SamPetering/scp-app
+          </a>
+        </HeroCard>
 
         {/* Getting started */}
         <div className="flex w-full flex-col gap-3">

@@ -135,7 +135,7 @@
   inherits: false;
 }
 
-.border-animation {
+.hero-border {
   @apply absolute -inset-1 -z-1 rounded-2xl;
   background-image: conic-gradient(
     from var(--angle),
