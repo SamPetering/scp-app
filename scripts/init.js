@@ -194,9 +194,43 @@ function Privacy() {
     },
   ];
 
+  const htmlFiles = [
+    {
+      relPath: 'apps/web/index.html',
+      content: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${name}</title>
+    <link rel="icon" href="/favicon.svg" />
+    <script>
+      if (
+        localStorage.theme === 'dark' ||
+        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+`,
+    },
+  ];
+
   for (const { relPath, content } of pages) {
     const fullPath = path.join(root, relPath);
     if (!fs.existsSync(fullPath)) continue;
+    if (!dryRun) fs.writeFileSync(fullPath, content);
+    log.info(relPath);
+  }
+
+  for (const { relPath, content } of htmlFiles) {
+    const fullPath = path.join(root, relPath);
     if (!dryRun) fs.writeFileSync(fullPath, content);
     log.info(relPath);
   }
