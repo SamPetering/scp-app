@@ -35,14 +35,14 @@ function Index() {
           </p>
           <div className="flex flex-wrap justify-center gap-1.5">
             {[
-              'Node.js',
-              'Fastify',
-              'Drizzle ORM',
-              'Neon',
-              'Clerk',
-              'Vite',
-              'React',
               'TypeScript',
+              'Fastify',
+              'Neon',
+              'Drizzle ORM',
+              'Clerk',
+              'React',
+              'Vite',
+              'Tailwind',
               'Railway',
               'Cloudflare Pages',
             ].map((tech) => (
