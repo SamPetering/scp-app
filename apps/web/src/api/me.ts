@@ -5,7 +5,7 @@ import useRequest from '@/hooks/useRequest';
 export function useGetMe(enabled: boolean = true) {
   const request = useRequest();
   return useQuery({
-    queryKey: ['me', 'example'],
+    queryKey: ['me'],
     queryFn: () => request({ method: 'GET', url: '/me' }, userSchema),
     enabled,
   });

@@ -55,18 +55,20 @@ if (!rootElement.innerHTML) {
         <ClerkProvider appearance={{ theme: shadcn }} publishableKey={PUBLISHABLE_KEY}>
           <InnerApp />
         </ClerkProvider>
-        <TanStackDevtools
-          plugins={[
-            {
-              name: 'TanStack Query',
-              render: <ReactQueryDevtoolsPanel />,
-            },
-            {
-              name: 'TanStack Router',
-              render: <TanStackRouterDevtoolsPanel router={router} />,
-            },
-          ]}
-        />
+        {import.meta.env.DEV && (
+          <TanStackDevtools
+            plugins={[
+              {
+                name: 'TanStack Query',
+                render: <ReactQueryDevtoolsPanel />,
+              },
+              {
+                name: 'TanStack Router',
+                render: <TanStackRouterDevtoolsPanel router={router} />,
+              },
+            ]}
+          />
+        )}
       </QueryClientProvider>
     </StrictMode>,
   );
