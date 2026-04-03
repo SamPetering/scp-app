@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { PageLayout } from '@/components/PageLayout';
+import { PageLayout } from '@/components/layouts/PageLayout';
 
 export const Route = createFileRoute('/privacy')({
   component: Privacy,

@@ -1,12 +1,16 @@
+import { useAuth } from '@clerk/react';
 import { userSchema } from '@scp-app/shared/types';
-import { useQuery } from '@tanstack/react-query';
-import useRequest from '@/hooks/useRequest';
+import { queryOptions, useQuery } from '@tanstack/react-query';
+import { makeRequest } from '@/hooks/useRequest';
 
-export function useGetMe(enabled: boolean = true) {
-  const request = useRequest();
-  return useQuery({
+export function getMeQueryOptions(getToken: () => Promise<string | null>) {
+  return queryOptions({
     queryKey: ['me'],
-    queryFn: () => request({ method: 'GET', url: '/me' }, userSchema),
-    enabled,
+    queryFn: () => makeRequest(getToken, { method: 'GET', url: '/me' }, userSchema),
   });
+}
+
+export function useGetMe() {
+  const { getToken } = useAuth();
+  return useQuery(getMeQueryOptions(getToken));
 }

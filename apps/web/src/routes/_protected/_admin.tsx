@@ -1,12 +1,14 @@
 import { Link, Outlet, createFileRoute, redirect } from '@tanstack/react-router';
 import { LayoutDashboard, Users } from 'lucide-react';
-import { LeftNavLayout } from '@/components/LeftNavLayout';
+import { getMeQueryOptions } from '@/api/me';
+import { LeftNavLayout } from '@/components/layouts/LeftNavLayout';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/_protected/_admin')({
+  staticData: { hideFooter: true },
   beforeLoad: async ({ context }) => {
-    const { me } = context;
+    const me = await context.queryClient.ensureQueryData(getMeQueryOptions(context.auth.getToken));
     if (!me || !me.roles.includes('admin')) throw redirect({ to: '/' });
   },
   component: AdminLayout,

@@ -4,7 +4,10 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { useGetUsers, useUpdateUserRoles } from '@/api/admin';
+import { useGetMe } from '@/api/me';
 import { DataTable } from '@/components/DataTable';
+import { PageLayout } from '@/components/layouts/PageLayout';
+import { QueryPage } from '@/components/QueryPage';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,14 +24,12 @@ export const Route = createFileRoute('/_protected/_admin/admin/users')({
 
 const col = createColumnHelper<User>();
 
-function AdminUsers() {
-  const { data, isPending, isError } = useGetUsers();
-  const { me } = Route.useRouteContext();
+function AdminUsersContent({ users }: { users: User[] }) {
+  const { data: me } = useGetMe();
   const updateRoles = useUpdateUserRoles();
-
   const [search, setSearch] = useState('');
 
-  const filtered = (data ?? []).filter(
+  const filtered = users.filter(
     (u) =>
       u.name.toLowerCase().includes(search.toLowerCase()) ||
       u.email.toLowerCase().includes(search.toLowerCase()),
@@ -86,11 +87,8 @@ function AdminUsers() {
     }),
   ];
 
-  if (isPending) return <div className="p-8 text-muted-foreground">loading...</div>;
-  if (isError) return <div className="p-8 text-destructive">failed to load</div>;
-
   return (
-    <div className="space-y-4 p-8">
+    <div className="space-y-4">
       <h1 className="text-2xl font-bold">Users</h1>
       <Input
         placeholder="Search by name or email..."
@@ -100,5 +98,14 @@ function AdminUsers() {
       />
       <DataTable columns={columns} data={filtered} />
     </div>
+  );
+}
+
+function AdminUsers() {
+  const query = useGetUsers();
+  return (
+    <QueryPage query={query} Layout={PageLayout}>
+      {(users) => <AdminUsersContent users={users} />}
+    </QueryPage>
   );
 }

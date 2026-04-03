@@ -32,7 +32,7 @@ export function LeftNavLayout({
           {collapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </Button>
       </aside>
-      <main className={cn('flex-1 overflow-auto', className)}>{children}</main>
+      <main className={cn('flex flex-1 flex-col overflow-auto', className)}>{children}</main>
     </div>
   );
 }

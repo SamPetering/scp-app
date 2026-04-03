@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { HeroCard } from '@/components/HeroCard';
-import { PageLayout } from '@/components/PageLayout';
+import { PageLayout } from '@/components/layouts/PageLayout';
 
 export const Route = createFileRoute('/about')({
   component: About,
@@ -65,7 +65,7 @@ const STACK: { name: string; description: string; href: string }[] = [
 
 function About() {
   return (
-    <PageLayout className="items-center justify-center pb-4">
+    <PageLayout className="items-center justify-center">
       <div className="flex w-full max-w-3xl flex-col gap-8">
         <HeroCard title="about">
           <p className="text-center text-muted-foreground">

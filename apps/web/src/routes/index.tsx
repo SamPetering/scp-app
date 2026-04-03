@@ -3,7 +3,7 @@ import { CheckIcon, CopyIcon } from 'lucide-react';
 import { useState } from 'react';
 import { HeroCard } from '@/components/HeroCard';
 import { InputField } from '@/components/InputField';
-import { PageLayout } from '@/components/PageLayout';
+import { PageLayout } from '@/components/layouts/PageLayout';
 import { Button } from '@/components/ui/button';
 import useClipboard from '@/hooks/useClipboard';
 

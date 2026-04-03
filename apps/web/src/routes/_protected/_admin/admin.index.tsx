@@ -6,6 +6,8 @@ import { Users } from 'lucide-react';
 import { useGetUsers } from '@/api/admin';
 import { Chart } from '@/components/Chart';
 import { DataTable } from '@/components/DataTable';
+import { PageLayout } from '@/components/layouts/PageLayout';
+import { QueryPage } from '@/components/QueryPage';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const Route = createFileRoute('/_protected/_admin/admin/')({
@@ -72,25 +74,17 @@ function SignupsChart({ users, className }: { users: User[]; className?: string 
   );
 }
 
-function AdminDashboard() {
-  const { data, isPending, isError } = useGetUsers();
-
-  if (isPending) return <div className="p-8 text-muted-foreground">loading...</div>;
-  if (isError) return <div className="p-8 text-destructive">failed to load</div>;
-
-  const users = data ?? [];
+function AdminDashboardContent({ users }: { users: User[] }) {
   const thirtyDaysAgo = subDays(new Date(), 30);
   const newCount = users.filter((u) => isAfter(new Date(u.createdAt), thirtyDaysAgo)).length;
-
   const sorted = [...users].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
   const recent = sorted.slice(0, 5);
 
   return (
-    <div className="space-y-8 p-8">
+    <div className="space-y-8">
       <h1 className="text-2xl font-bold">Overview</h1>
-
       <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
         <StatCard title="Total Users" icon={Users} className="md:col-span-1">
           <>
@@ -104,5 +98,14 @@ function AdminDashboard() {
         </StatCard>
       </div>
     </div>
+  );
+}
+
+function AdminDashboard() {
+  const query = useGetUsers();
+  return (
+    <QueryPage query={query} Layout={PageLayout}>
+      {(users) => <AdminDashboardContent users={users} />}
+    </QueryPage>
   );
 }
