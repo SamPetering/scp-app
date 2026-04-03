@@ -35,7 +35,7 @@ const RootLayout = () => {
   const navOptions: { to: string; label: string }[] = [
     { to: '/', label: 'home' },
     { to: '/about', label: 'about' },
-    ...(me != null ? [{ to: '/me', label: 'me' }] : []),
+    ...(isLoaded ? [{ to: '/me', label: 'me' }] : []),
     ...(me?.roles.includes('admin') ? [{ to: '/admin', label: 'admin' }] : []),
   ];
 
