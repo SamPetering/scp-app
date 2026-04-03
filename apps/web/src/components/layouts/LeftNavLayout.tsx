@@ -2,15 +2,14 @@ import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { PageLayout } from './PageLayout';
 
 export function LeftNavLayout({
   nav,
   children,
-  className,
 }: {
   nav: (collapsed: boolean) => React.ReactNode;
   children: React.ReactNode;
-  className?: string;
 }) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -32,7 +31,7 @@ export function LeftNavLayout({
           {collapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </Button>
       </aside>
-      <main className={cn('flex flex-1 flex-col overflow-auto', className)}>{children}</main>
+      <PageLayout className="overflow-auto">{children}</PageLayout>
     </div>
   );
 }

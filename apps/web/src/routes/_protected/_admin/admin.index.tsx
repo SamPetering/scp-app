@@ -6,7 +6,6 @@ import { Users } from 'lucide-react';
 import { useGetUsers } from '@/api/admin';
 import { Chart } from '@/components/Chart';
 import { DataTable } from '@/components/DataTable';
-import { PageLayout } from '@/components/layouts/PageLayout';
 import { QueryPage } from '@/components/QueryPage';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -104,7 +103,7 @@ function AdminDashboardContent({ users }: { users: User[] }) {
 function AdminDashboard() {
   const query = useGetUsers();
   return (
-    <QueryPage query={query} Layout={PageLayout}>
+    <QueryPage query={query}>
       {(users) => <AdminDashboardContent users={users} />}
     </QueryPage>
   );

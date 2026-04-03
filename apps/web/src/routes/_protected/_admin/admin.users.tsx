@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { useGetUsers, useUpdateUserRoles } from '@/api/admin';
 import { useGetMe } from '@/api/me';
 import { DataTable } from '@/components/DataTable';
-import { PageLayout } from '@/components/layouts/PageLayout';
 import { QueryPage } from '@/components/QueryPage';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -104,7 +103,7 @@ function AdminUsersContent({ users }: { users: User[] }) {
 function AdminUsers() {
   const query = useGetUsers();
   return (
-    <QueryPage query={query} Layout={PageLayout}>
+    <QueryPage query={query}>
       {(users) => <AdminUsersContent users={users} />}
     </QueryPage>
   );
