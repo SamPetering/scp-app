@@ -27,7 +27,7 @@ type RouterContext = {
 };
 
 const RootLayout = () => {
-  const { isLoaded } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
   const { data: me } = useGetMe();
   const matches = useMatches();
   const hideFooter = matches.some((m) => m.staticData?.hideFooter);
@@ -35,7 +35,7 @@ const RootLayout = () => {
   const navOptions: { to: string; label: string }[] = [
     { to: '/', label: 'home' },
     { to: '/about', label: 'about' },
-    ...(isLoaded ? [{ to: '/me', label: 'me' }] : []),
+    ...(isSignedIn ? [{ to: '/me', label: 'me' }] : []),
     ...(me?.roles.includes('admin') ? [{ to: '/admin', label: 'admin' }] : []),
   ];
 
