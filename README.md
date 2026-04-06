@@ -4,12 +4,7 @@ Fullstack monorepo template — Fastify API + Vite/React frontend.
 
 ## Requirements
 
-| Tool                                 | Install                                                                      | Notes                                                   |
-| ------------------------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------- |
-| [Node.js](https://nodejs.org) v20+   | `nvm install 20` ([nvm](https://www.nvmnode.com/guide/installation-sh.html)) | JavaScript runtime                                      |
-| [pnpm](https://pnpm.io)              | `curl -fsSL https://get.pnpm.io/install.sh \| sh -`                          | Faster, more disk-efficient alternative to npm/yarn     |
-| [GitHub CLI](https://cli.github.com) | `brew install gh`                                                            | Used for the one-liner repo create + push               |
-| [ngrok](https://ngrok.com)           | `brew install ngrok`                                                         | _(optional)_ Only needed to test Clerk webhooks locally |
+[Node.js](https://nodejs.org) v20+, [pnpm](https://pnpm.io), [GitHub CLI](https://cli.github.com), and optionally [ngrok](https://ngrok.com) for local webhook testing.
 
 ## Structure
 
@@ -155,20 +150,27 @@ WHERE email = 'you@example.com';
 
 Once you have admin access, you can grant other users admin from `/admin/users` in the app.
 
+#### 3. Configure Clerk webhooks locally _(optional)_
+
+Use [ngrok](https://ngrok.com) to expose your local API:
+
+```sh
+ngrok http 3000
+```
+
+Add a webhook endpoint in the Clerk dashboard (dev instance) → **Webhooks** → **Add endpoint** pointing to your ngrok URL, with events `user.created`, `user.updated`, `user.deleted`. Copy the **Signing Secret** into `apps/api/.env`:
+
+```
+CLERK_WEBHOOK_SECRET=whsec_...
+```
+
+Then restart the API.
+
 ---
 
 ### Production deployment
 
-#### 1. Set up Clerk for production
-
-1. In the Clerk dashboard, switch to your production instance.
-2. Under **Configure → Domains**, add your domain and add the DNS records Clerk provides to Cloudflare. Set all Clerk DNS records to **DNS only (grey cloud)** — proxying them will break Clerk.
-3. If you have social login providers enabled (e.g. Google), go to **Configure → SSO Connections** and add your own OAuth credentials for each provider. Clerk uses shared credentials in development but requires your own in production.
-4. Copy your production API keys (`pk_live_...`, `sk_live_...`) — you'll need them in step 4.
-
----
-
-#### 2. Deploy to Railway and Cloudflare Pages
+#### 1. Deploy to Railway and Cloudflare Pages
 
 **Railway (API)**
 
@@ -181,7 +183,7 @@ Once you have admin access, you can grant other users admin from `/admin/users` 
    | `HOST`                  | `0.0.0.0`                            |
    | `CLERK_PUBLISHABLE_KEY` | `pk_live_...`                        |
    | `CLERK_SECRET_KEY`      | `sk_live_...`                        |
-   | `CLERK_WEBHOOK_SECRET`  | Leave blank for now — see step 5     |
+   | `CLERK_WEBHOOK_SECRET`  | Leave blank for now — see step 3     |
    | `DATABASE_URL`          | Neon `main` branch connection string |
    | `SENTRY_DSN`            | Sentry Node.js DSN _(optional)_      |
 
@@ -218,11 +220,18 @@ Once you have admin access, you can grant other users admin from `/admin/users` 
 
 ---
 
+#### 2. Set up Clerk for production
+
+1. In the Clerk dashboard, switch to your production instance.
+2. Under **Configure → Domains**, add your domain and add the DNS records Clerk provides to Cloudflare. Set all Clerk DNS records to **DNS only (grey cloud)** — proxying them will break Clerk.
+3. If you have social login providers enabled (e.g. Google), go to **Configure → SSO Connections** and add your own OAuth credentials for each provider. Clerk uses shared credentials in development but requires your own in production.
+4. Copy your production API keys (`pk_live_...`, `sk_live_...`) — you'll need them in step 4.
+
+---
+
 #### 3. Configure Clerk webhooks
 
 The API syncs users to the database on `user.created`, `user.updated`, and `user.deleted` events via `POST /webhooks/clerk`.
-
-**Production**
 
 In the Clerk dashboard (production instance) → **Webhooks** → **Add endpoint**:
 
@@ -234,16 +243,6 @@ After saving, copy the **Signing Secret** and add it to your Railway environment
 ```
 CLERK_WEBHOOK_SECRET=whsec_...
 ```
-
-**Local**
-
-Use [ngrok](https://ngrok.com) to expose your local API:
-
-```sh
-ngrok http 3000
-```
-
-Add a second webhook endpoint in Clerk (dev instance) pointing to your ngrok URL, copy its signing secret into `apps/api/.env`, and restart the API.
 
 ---
 
