@@ -123,7 +123,7 @@ function Index() {
               </a>
               . See the{' '}
               <a
-                href={GITHUB_URL + '#readme'}
+                href={GITHUB_URL + '?tab=readme-ov-file#setup-guide'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-primary hover:underline"

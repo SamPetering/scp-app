@@ -22,25 +22,25 @@ function Privacy() {
           </p>
 
           <section className="space-y-2">
-            <h2 className="text-base font-semibold text-foreground">Information we collect</h2>
+            <h2 className="text-base font-semibold text-foreground">Information collected</h2>
             <p>
-              When you sign in, we collect your name and email address. This information is provided
-              through your chosen sign-in method (e.g. Google) and stored in our database.
+              When you sign in, scp-app collects your name and email address. This information is
+              provided through your chosen sign-in method (e.g. Google) and stored in its database.
             </p>
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-semibold text-foreground">How we use it</h2>
+            <h2 className="text-base font-semibold text-foreground">How it's used</h2>
             <p>
               Your name and email are used solely to identify your account and provide the service.
-              We do not sell or share your data with third parties for marketing purposes.
+              scp-app does not sell or share your data with third parties for marketing purposes.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-base font-semibold text-foreground">Third-party services</h2>
             <p>
-              We use{' '}
+              scp-app uses{' '}
               <a href="https://clerk.com" className="underline hover:text-foreground">
                 Clerk
               </a>{' '}
@@ -56,23 +56,10 @@ function Privacy() {
             <h2 className="text-base font-semibold text-foreground">Data deletion</h2>
             <p>
               You can delete your account at any time. Deleting your account removes all associated
-              data from our database.
+              data from the scp-app database.
             </p>
           </section>
 
-          <section className="space-y-2">
-            <h2 className="text-base font-semibold text-foreground">Contact</h2>
-            <p>
-              For privacy-related questions, open an issue on{' '}
-              <a
-                href="https://github.com/SamPetering/scp-app/issues"
-                className="underline hover:text-foreground"
-              >
-                GitHub
-              </a>
-              .
-            </p>
-          </section>
         </div>
       </div>
     </PageLayout>
