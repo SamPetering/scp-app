@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { PageLayout } from '@/components/layouts/PageLayout';
 
-export const Route = createFileRoute('/tos')({
+export const Route = createFileRoute('/_public/tos')({
   component: Tos,
 });
 

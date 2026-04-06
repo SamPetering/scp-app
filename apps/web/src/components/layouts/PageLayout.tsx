@@ -7,5 +7,5 @@ export function PageLayout({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <main className={cn('flex flex-1 flex-col p-8', className)}>{children}</main>;
+  return <main className={cn('flex flex-1 flex-col p-4 sm:p-8', className)}>{children}</main>;
 }

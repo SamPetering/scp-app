@@ -83,7 +83,7 @@ function AdminDashboardContent({ users }: { users: User[] }) {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold">Overview</h1>
+      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
         <StatCard title="Total Users" icon={Users} className="md:col-span-1">
           <>
@@ -102,9 +102,5 @@ function AdminDashboardContent({ users }: { users: User[] }) {
 
 function AdminDashboard() {
   const query = useGetUsers();
-  return (
-    <QueryPage query={query}>
-      {(users) => <AdminDashboardContent users={users} />}
-    </QueryPage>
-  );
+  return <QueryPage query={query}>{(users) => <AdminDashboardContent users={users} />}</QueryPage>;
 }

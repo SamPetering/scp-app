@@ -6,16 +6,11 @@ import { useState } from 'react';
 import { useGetUsers, useUpdateUserRoles } from '@/api/admin';
 import { useGetMe } from '@/api/me';
 import { DataTable } from '@/components/DataTable';
+import { Dropdown, DropdownItem, DropdownLabel } from '@/components/Dropdown';
 import { QueryPage } from '@/components/QueryPage';
+import { SearchInput } from '@/components/SearchInput';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 
 export const Route = createFileRoute('/_protected/_admin/admin/users')({
   component: AdminUsers,
@@ -52,6 +47,7 @@ function AdminUsersContent({ users }: { users: User[] }) {
     col.display({
       id: 'actions',
       header: '',
+      meta: { className: 'w-px' },
       cell: ({ row }) => {
         const user = row.original;
         const isSelf = user.clerkId === me?.clerkId;
@@ -60,27 +56,28 @@ function AdminUsersContent({ users }: { users: User[] }) {
         if (isSelf) return <div className="h-7" />;
 
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <Dropdown
+            trigger={
               <Button variant="ghost" size="icon-sm">
                 <MoreHorizontal size={14} />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() =>
-                  updateRoles.mutate({
-                    id: user.id,
-                    roles: isAdmin
-                      ? user.roles.filter((r) => r !== 'admin')
-                      : [...user.roles, 'admin'],
-                  })
-                }
-              >
-                {isAdmin ? 'Remove admin' : 'Make admin'}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            }
+            align="end"
+          >
+            <DropdownLabel>Actions</DropdownLabel>
+            <DropdownItem
+              onClick={() =>
+                updateRoles.mutate({
+                  id: user.id,
+                  roles: isAdmin
+                    ? user.roles.filter((r) => r !== 'admin')
+                    : [...user.roles, 'admin'],
+                })
+              }
+            >
+              {isAdmin ? 'Remove admin' : 'Make admin'}
+            </DropdownItem>
+          </Dropdown>
         );
       },
     }),
@@ -89,11 +86,10 @@ function AdminUsersContent({ users }: { users: User[] }) {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">Users</h1>
-      <Input
+      <SearchInput
+        onSearch={setSearch}
         placeholder="Search by name or email..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="max-w-sm"
+        className="w-full sm:max-w-sm"
       />
       <DataTable columns={columns} data={filtered} />
     </div>
@@ -102,9 +98,5 @@ function AdminUsersContent({ users }: { users: User[] }) {
 
 function AdminUsers() {
   const query = useGetUsers();
-  return (
-    <QueryPage query={query}>
-      {(users) => <AdminUsersContent users={users} />}
-    </QueryPage>
-  );
+  return <QueryPage query={query}>{(users) => <AdminUsersContent users={users} />}</QueryPage>;
 }

@@ -7,7 +7,7 @@ import { PageLayout } from '@/components/layouts/PageLayout';
 import { Button } from '@/components/ui/button';
 import useClipboard from '@/hooks/useClipboard';
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/_public/')({
   component: Index,
 });
 

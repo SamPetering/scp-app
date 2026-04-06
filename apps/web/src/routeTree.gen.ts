@@ -9,49 +9,54 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TosRouteImport } from './routes/tos'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as AboutRouteImport } from './routes/about'
+import { Route as PublicRouteImport } from './routes/_public'
 import { Route as ProtectedRouteImport } from './routes/_protected'
-import { Route as SplatRouteImport } from './routes/$'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProtectedMeRouteImport } from './routes/_protected/me'
+import { Route as PublicIndexRouteImport } from './routes/_public/index'
+import { Route as PublicTosRouteImport } from './routes/_public/tos'
+import { Route as PublicPrivacyRouteImport } from './routes/_public/privacy'
+import { Route as PublicAboutRouteImport } from './routes/_public/about'
+import { Route as ProtectedProfileRouteImport } from './routes/_protected/profile'
+import { Route as ProtectedHomeRouteImport } from './routes/_protected/home'
 import { Route as ProtectedAdminRouteImport } from './routes/_protected/_admin'
 import { Route as ProtectedAdminAdminIndexRouteImport } from './routes/_protected/_admin/admin.index'
 import { Route as ProtectedAdminAdminUsersRouteImport } from './routes/_protected/_admin/admin.users'
 
-const TosRoute = TosRouteImport.update({
-  id: '/tos',
-  path: '/tos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const PublicRoute = PublicRouteImport.update({
+  id: '/_public',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProtectedRoute = ProtectedRouteImport.update({
   id: '/_protected',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SplatRoute = SplatRouteImport.update({
-  id: '/$',
-  path: '/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
+const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PublicRoute,
 } as any)
-const ProtectedMeRoute = ProtectedMeRouteImport.update({
-  id: '/me',
-  path: '/me',
+const PublicTosRoute = PublicTosRouteImport.update({
+  id: '/tos',
+  path: '/tos',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicPrivacyRoute = PublicPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicAboutRoute = PublicAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => PublicRoute,
+} as any)
+const ProtectedProfileRoute = ProtectedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+const ProtectedHomeRoute = ProtectedHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
   getParentRoute: () => ProtectedRoute,
 } as any)
 const ProtectedAdminRoute = ProtectedAdminRouteImport.update({
@@ -72,35 +77,36 @@ const ProtectedAdminAdminUsersRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/$': typeof SplatRoute
-  '/about': typeof AboutRoute
-  '/privacy': typeof PrivacyRoute
-  '/tos': typeof TosRoute
-  '/me': typeof ProtectedMeRoute
+  '/': typeof PublicIndexRoute
+  '/home': typeof ProtectedHomeRoute
+  '/profile': typeof ProtectedProfileRoute
+  '/about': typeof PublicAboutRoute
+  '/privacy': typeof PublicPrivacyRoute
+  '/tos': typeof PublicTosRoute
   '/admin/users': typeof ProtectedAdminAdminUsersRoute
   '/admin/': typeof ProtectedAdminAdminIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/$': typeof SplatRoute
-  '/about': typeof AboutRoute
-  '/privacy': typeof PrivacyRoute
-  '/tos': typeof TosRoute
-  '/me': typeof ProtectedMeRoute
+  '/': typeof PublicIndexRoute
+  '/home': typeof ProtectedHomeRoute
+  '/profile': typeof ProtectedProfileRoute
+  '/about': typeof PublicAboutRoute
+  '/privacy': typeof PublicPrivacyRoute
+  '/tos': typeof PublicTosRoute
   '/admin/users': typeof ProtectedAdminAdminUsersRoute
   '/admin': typeof ProtectedAdminAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/$': typeof SplatRoute
   '/_protected': typeof ProtectedRouteWithChildren
-  '/about': typeof AboutRoute
-  '/privacy': typeof PrivacyRoute
-  '/tos': typeof TosRoute
+  '/_public': typeof PublicRouteWithChildren
   '/_protected/_admin': typeof ProtectedAdminRouteWithChildren
-  '/_protected/me': typeof ProtectedMeRoute
+  '/_protected/home': typeof ProtectedHomeRoute
+  '/_protected/profile': typeof ProtectedProfileRoute
+  '/_public/about': typeof PublicAboutRoute
+  '/_public/privacy': typeof PublicPrivacyRoute
+  '/_public/tos': typeof PublicTosRoute
+  '/_public/': typeof PublicIndexRoute
   '/_protected/_admin/admin/users': typeof ProtectedAdminAdminUsersRoute
   '/_protected/_admin/admin/': typeof ProtectedAdminAdminIndexRoute
 }
@@ -108,67 +114,50 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/$'
+    | '/home'
+    | '/profile'
     | '/about'
     | '/privacy'
     | '/tos'
-    | '/me'
     | '/admin/users'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/$'
+    | '/home'
+    | '/profile'
     | '/about'
     | '/privacy'
     | '/tos'
-    | '/me'
     | '/admin/users'
     | '/admin'
   id:
     | '__root__'
-    | '/'
-    | '/$'
     | '/_protected'
-    | '/about'
-    | '/privacy'
-    | '/tos'
+    | '/_public'
     | '/_protected/_admin'
-    | '/_protected/me'
+    | '/_protected/home'
+    | '/_protected/profile'
+    | '/_public/about'
+    | '/_public/privacy'
+    | '/_public/tos'
+    | '/_public/'
     | '/_protected/_admin/admin/users'
     | '/_protected/_admin/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  SplatRoute: typeof SplatRoute
   ProtectedRoute: typeof ProtectedRouteWithChildren
-  AboutRoute: typeof AboutRoute
-  PrivacyRoute: typeof PrivacyRoute
-  TosRoute: typeof TosRoute
+  PublicRoute: typeof PublicRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/tos': {
-      id: '/tos'
-      path: '/tos'
-      fullPath: '/tos'
-      preLoaderRoute: typeof TosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof PublicRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_protected': {
@@ -178,25 +167,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$': {
-      id: '/$'
-      path: '/$'
-      fullPath: '/$'
-      preLoaderRoute: typeof SplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
+    '/_public/': {
+      id: '/_public/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PublicIndexRouteImport
+      parentRoute: typeof PublicRoute
     }
-    '/_protected/me': {
-      id: '/_protected/me'
-      path: '/me'
-      fullPath: '/me'
-      preLoaderRoute: typeof ProtectedMeRouteImport
+    '/_public/tos': {
+      id: '/_public/tos'
+      path: '/tos'
+      fullPath: '/tos'
+      preLoaderRoute: typeof PublicTosRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/privacy': {
+      id: '/_public/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PublicPrivacyRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/about': {
+      id: '/_public/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof PublicAboutRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_protected/profile': {
+      id: '/_protected/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProtectedProfileRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
+    '/_protected/home': {
+      id: '/_protected/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof ProtectedHomeRouteImport
       parentRoute: typeof ProtectedRoute
     }
     '/_protected/_admin': {
@@ -239,25 +249,40 @@ const ProtectedAdminRouteWithChildren = ProtectedAdminRoute._addFileChildren(
 
 interface ProtectedRouteChildren {
   ProtectedAdminRoute: typeof ProtectedAdminRouteWithChildren
-  ProtectedMeRoute: typeof ProtectedMeRoute
+  ProtectedHomeRoute: typeof ProtectedHomeRoute
+  ProtectedProfileRoute: typeof ProtectedProfileRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedAdminRoute: ProtectedAdminRouteWithChildren,
-  ProtectedMeRoute: ProtectedMeRoute,
+  ProtectedHomeRoute: ProtectedHomeRoute,
+  ProtectedProfileRoute: ProtectedProfileRoute,
 }
 
 const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
   ProtectedRouteChildren,
 )
 
+interface PublicRouteChildren {
+  PublicAboutRoute: typeof PublicAboutRoute
+  PublicPrivacyRoute: typeof PublicPrivacyRoute
+  PublicTosRoute: typeof PublicTosRoute
+  PublicIndexRoute: typeof PublicIndexRoute
+}
+
+const PublicRouteChildren: PublicRouteChildren = {
+  PublicAboutRoute: PublicAboutRoute,
+  PublicPrivacyRoute: PublicPrivacyRoute,
+  PublicTosRoute: PublicTosRoute,
+  PublicIndexRoute: PublicIndexRoute,
+}
+
+const PublicRouteWithChildren =
+  PublicRoute._addFileChildren(PublicRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  SplatRoute: SplatRoute,
   ProtectedRoute: ProtectedRouteWithChildren,
-  AboutRoute: AboutRoute,
-  PrivacyRoute: PrivacyRoute,
-  TosRoute: TosRoute,
+  PublicRoute: PublicRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -55,7 +55,7 @@
   --card-foreground: oklch(0.148 0.004 228.8);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.148 0.004 228.8);
-  --primary: oklch(0.508 0.118 165.612);
+  --primary: oklch(0.596 0.145 163.225);
   --primary-foreground: oklch(0.979 0.021 166.113);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -90,7 +90,7 @@
   --card-foreground: oklch(0.987 0.002 197.1);
   --popover: oklch(0.218 0.008 223.9);
   --popover-foreground: oklch(0.987 0.002 197.1);
-  --primary: oklch(0.432 0.095 166.913);
+  --primary: oklch(0.596 0.145 163.225);
   --primary-foreground: oklch(0.979 0.021 166.113);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
@@ -135,6 +135,7 @@
   inherits: false;
 }
 
+/* #region fancy border */
 .hero-border {
   @apply absolute -inset-1 -z-1 rounded-2xl;
   background-image: conic-gradient(
@@ -160,3 +161,49 @@
     --angle: 360deg;
   }
 }
+/* #endregion fancy border*/
+
+/* #region clerk user profile */
+.user-profile-container {
+  container-type: inline-size;
+}
+.cl-userProfile-root {
+  width: 100%;
+}
+.cl-userProfile-root .cl-cardBox {
+  width: 100%;
+}
+/* sm */
+@container (max-width: 30em) {
+  .cl-userProfile-root .cl-profileSection {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+}
+/* md */
+@contianer (max-width: 48em) {
+  .cl-userProfile-root .cl-navbar {
+    display: none;
+  }
+  .cl-userProfile-root .cl-navbarMobileMenuRow {
+    display: flex;
+  }
+  .cl-userProfile-root .cl-cardBox {
+    display: flex;
+    flex-direction: column;
+  }
+}
+/* lg */
+@container (max-width: 62em) {
+  .cl-userProfile-root .cl-profileSection {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+  .cl-userProfile-root .cl-profileSectionHeader {
+    align-self: self-start;
+    margin-top: unset;
+    transform: none;
+    padding: 0px;
+  }
+}
+/* #endregion clerk user profile */
