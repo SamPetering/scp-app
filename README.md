@@ -67,7 +67,9 @@ Commit the generated migration files alongside your schema changes.
 
 ## Setup guide
 
-### 1. Create external services
+### Local development
+
+#### 1. Create external services
 
 **Clerk**
 
@@ -94,7 +96,7 @@ Neon supports branch-based environments. Use `main` for production and a `dev` b
 
 ---
 
-### 2. Clone and init locally
+#### 2. Clone and init locally
 
 ```sh
 git clone https://github.com/SamPetering/scp-app my-project
@@ -155,7 +157,9 @@ Once you have admin access, you can grant other users admin from `/admin/users` 
 
 ---
 
-### 3. Set up Clerk for production
+### Production deployment
+
+#### 1. Set up Clerk for production
 
 1. In the Clerk dashboard, switch to your production instance.
 2. Under **Configure → Domains**, add your domain and add the DNS records Clerk provides to Cloudflare. Set all Clerk DNS records to **DNS only (grey cloud)** — proxying them will break Clerk.
@@ -164,7 +168,7 @@ Once you have admin access, you can grant other users admin from `/admin/users` 
 
 ---
 
-### 4. Deploy to Railway and Cloudflare Pages
+#### 2. Deploy to Railway and Cloudflare Pages
 
 **Railway (API)**
 
@@ -214,7 +218,7 @@ Once you have admin access, you can grant other users admin from `/admin/users` 
 
 ---
 
-### 5. Configure Clerk webhooks
+#### 3. Configure Clerk webhooks
 
 The API syncs users to the database on `user.created`, `user.updated`, and `user.deleted` events via `POST /webhooks/clerk`.
 
@@ -243,7 +247,7 @@ Add a second webhook endpoint in Clerk (dev instance) pointing to your ngrok URL
 
 ---
 
-### 6. Grant yourself admin
+#### 4. Grant yourself admin
 
 Sign in to the app at least once so your user is synced to the database, then run the following in the [Neon SQL editor](https://console.neon.tech) against your `main` branch:
 

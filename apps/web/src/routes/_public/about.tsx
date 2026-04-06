@@ -9,27 +9,28 @@ export const Route = createFileRoute('/_public/about')({
 const FRONTEND: { name: string; description: string; href: string }[] = [
   {
     name: 'React',
-    description: 'The UI layer everything else builds on.',
+    description: 'Component-based UI with a mature ecosystem',
     href: 'https://react.dev/',
   },
   {
     name: 'Vite',
-    description: 'Instant HMR and fast builds.',
+    description: 'Sub-second HMR and fast production builds',
     href: 'https://vite.dev/',
   },
   {
     name: 'Tailwind CSS',
-    description: 'Utility-first css. Simply the best way to write styles.',
+    description: 'Utility classes co-located with markup',
     href: 'https://tailwindcss.com/',
   },
   {
     name: 'shadcn/ui',
-    description: 'Copy-paste component primitives.',
+    description: 'Copy-paste component primitives that you own',
     href: 'https://ui.shadcn.com/',
   },
+  // todo: fix
   {
     name: 'TanStack',
-    description: 'Router, Query, Table, Hotkeys, and Devtools. All hail Tanner.',
+    description: 'Router, Query, Table, Hotkeys, and Devtools',
     href: 'https://tanstack.com/',
   },
 ];
@@ -37,17 +38,17 @@ const FRONTEND: { name: string; description: string; href: string }[] = [
 const BACKEND: { name: string; description: string; href: string }[] = [
   {
     name: 'Fastify',
-    description: 'Fast, low-overhead Node.js API framework with a great plugin ecosystem.',
+    description: 'Low-overhead Node.js API framework with a great plugin ecosystem',
     href: 'https://fastify.dev/',
   },
   {
     name: 'Neon',
-    description: 'Serverless Postgres with instant branching — great for dev/prod parity.',
+    description: 'Serverless Postgres with instant branching for dev/prod parity',
     href: 'https://neon.com/',
   },
   {
     name: 'Drizzle ORM',
-    description: 'Lightweight, fully typed ORM. SQL-like syntax that stays close to the database.',
+    description: 'Fully typed ORM with SQL-like query API',
     href: 'https://orm.drizzle.team/',
   },
 ];
@@ -55,30 +56,27 @@ const BACKEND: { name: string; description: string; href: string }[] = [
 const PLATFORM: { name: string; description: string; href: string }[] = [
   {
     name: 'TypeScript',
-    description:
-      'End-to-end, from the database to the UI. Shared types across the entire monorepo.',
+    description: 'End-to-end with shared types across the entire monorepo',
     href: 'https://www.typescriptlang.org/',
   },
   {
     name: 'Zod',
-    description:
-      'Schema validation on both ends — API contracts enforced at runtime and compile time.',
+    description: 'Schema validation that enforces API contracts at runtime and compile time',
     href: 'https://zod.dev/',
   },
   {
     name: 'Clerk',
-    description: 'Hosted auth with prebuilt UI components and a user management dashboard.',
+    description: 'Drop in auth with a hosted user management dashboard',
     href: 'https://clerk.com/',
   },
   {
     name: 'Cloudflare Pages',
-    description: 'Global edge deployment for the frontend. Fast, free, and minimal config.',
+    description: 'Global edge deployment for the frontend with minimal config',
     href: 'https://pages.cloudflare.com/',
   },
   {
     name: 'Railway',
-    description:
-      'Deploys the API via a simple toml config. Simple, predictable, and easy to scale.',
+    description: 'API deployment via a simple toml config',
     href: 'https://railway.app/',
   },
 ];
@@ -95,14 +93,13 @@ function About() {
       <div className="flex w-full max-w-3xl flex-col gap-8">
         <HeroCard title="about">
           <p className="text-center text-muted-foreground">
-            scp-app is a fullstack TypeScript monorepo template. Rather than spending the first days
-            of a new project wiring up auth, a database, deployments, and a component library, this
-            template has all of that ready to go — opinionated but easy to adapt.
+            scp-app is a fullstack TypeScript monorepo starter built so the foundation is never the
+            bottleneck. Auth, database, deployments, a component library, shared utilities — already
+            wired up and working together. The stack is fixed and opinionated. That's the point.
           </p>
           <p className="text-center text-muted-foreground">
-            The goal is a stack that stays out of your way: end-to-end type safety, a great
-            developer experience, and zero-friction deployments. Clone it, run the init script, and
-            start building the thing that actually matters.
+            To get started: clone the repo, create accounts for Clerk, Neon, Railway, and Cloudflare
+            Pages, add your env vars, and run the init script.
           </p>
         </HeroCard>
 
