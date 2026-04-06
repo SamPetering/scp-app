@@ -59,7 +59,6 @@ function Privacy() {
               data from the scp-app database.
             </p>
           </section>
-
         </div>
       </div>
     </PageLayout>

@@ -5,6 +5,14 @@ import { Dropdown, DropdownItem, DropdownLabel, DropdownSeparator } from '@/comp
 import { ShortcutBadge } from '@/components/ShortcutBadge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useTheme } from '@/hooks/useTheme';
+import { cn } from '@/lib/utils';
+
+type ItemSize = 'sm' | 'md';
+
+const itemSizeConfig = {
+  sm: { icon: 'size-3.5', text: 'text-sm', padding: '' },
+  md: { icon: 'size-4', text: 'text-base', padding: 'py-2.5' },
+};
 
 export function UserMenuLabel() {
   const { user } = useUser();
@@ -18,42 +26,50 @@ export function UserMenuLabel() {
   );
 }
 
-export function UserMenuToggleThemeItem() {
+export function UserMenuToggleThemeItem({ itemSize = 'sm' }: { itemSize?: ItemSize }) {
   const { dark, toggle } = useTheme();
   const Icon = dark ? SunIcon : MoonIcon;
+  const { icon, text, padding } = itemSizeConfig[itemSize];
   return (
     <Button
       variant="ghost"
-      className="w-full items-center justify-start font-normal"
+      className={cn('w-full items-center justify-start font-normal', text, padding)}
       onClick={toggle}
     >
-      <Icon className="size-3.5" />
+      <Icon className={icon} />
       <span>toggle theme</span>
       <ShortcutBadge className="-mr-1 ml-auto hidden sm:inline-flex" hotkey="toggleTheme" />
     </Button>
   );
 }
 
-export function UserMenuProfileItem() {
+export function UserMenuProfileItem({ itemSize = 'sm' }: { itemSize?: ItemSize }) {
+  const { icon, text, padding } = itemSizeConfig[itemSize];
   return (
     <Link
       to="/profile"
-      className={buttonVariants({
-        variant: 'ghost',
-        className: 'w-full justify-start font-normal',
-      })}
+      className={cn(
+        buttonVariants({ variant: 'ghost', className: 'w-full justify-start font-normal' }),
+        text,
+        padding,
+      )}
     >
-      <UserIcon className="size-3.5" />
+      <UserIcon className={icon} />
       profile
     </Link>
   );
 }
 
-export function UserMenuSignOutItem() {
+export function UserMenuSignOutItem({ itemSize = 'sm' }: { itemSize?: ItemSize }) {
   const { signOut } = useClerk();
+  const { icon, text, padding } = itemSizeConfig[itemSize];
   return (
-    <Button variant="ghost" className="w-full justify-start font-normal" onClick={() => signOut()}>
-      <LogOutIcon className="size-3.5" />
+    <Button
+      variant="ghost"
+      className={cn('w-full justify-start font-normal', text, padding)}
+      onClick={() => signOut()}
+    >
+      <LogOutIcon className={icon} />
       sign out
     </Button>
   );

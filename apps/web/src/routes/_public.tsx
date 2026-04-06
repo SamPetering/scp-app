@@ -1,4 +1,4 @@
-import { useAuth } from '@clerk/react';
+import { SignInButton, useAuth } from '@clerk/react';
 import { Link, Outlet, createFileRoute, redirect } from '@tanstack/react-router';
 import { MenuIcon } from 'lucide-react';
 import { Dropdown, DropdownItem } from '@/components/Dropdown';
@@ -43,23 +43,30 @@ function PublicLayout() {
           ))}
         </div>
 
-        <Dropdown
-          trigger={
-            <Button variant="outline" size="icon" className="sm:hidden" aria-label="Toggle menu">
-              <MenuIcon />
-            </Button>
-          }
-        >
-          {navOptions.map(({ to, label }) => (
-            <DropdownItem key={to} asChild>
-              <Link to={to}>{label}</Link>
-            </DropdownItem>
-          ))}
-        </Dropdown>
-
         <div className={cn('ml-auto flex items-center gap-3', !isLoaded && 'inert opacity-0')}>
           <ThemeButton />
-          <UserButton />
+          <div className="hidden sm:block">
+            <UserButton />
+          </div>
+          <Dropdown
+            align="end"
+            trigger={
+              <Button variant="outline" size="icon" className="sm:hidden" aria-label="Toggle menu">
+                <MenuIcon />
+              </Button>
+            }
+          >
+            <DropdownItem className="p-0">
+              <SignInButton mode="modal">
+                <button className="w-full px-2 py-1.5 text-left text-sm">sign in</button>
+              </SignInButton>
+            </DropdownItem>
+            {navOptions.map(({ to, label }) => (
+              <DropdownItem key={to} asChild>
+                <Link to={to}>{label}</Link>
+              </DropdownItem>
+            ))}
+          </Dropdown>
         </div>
       </nav>
       <div className="flex flex-1 flex-col">

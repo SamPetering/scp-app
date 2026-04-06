@@ -94,8 +94,9 @@ function About() {
         <HeroCard title="about">
           <p className="text-center text-muted-foreground">
             scp-app is a fullstack TypeScript monorepo starter built so the foundation is never the
-            bottleneck. Auth, database, deployments, a component library, shared utilities — already
-            wired up and working together. The stack is fixed and opinionated. That's the point.
+            bottleneck. Auth, database, deployments, components, and a responsive authenticated UI
+            shell — already wired up and working together. The stack is fixed and opinionated.
+            That's the point.
           </p>
           <p className="text-center text-muted-foreground">
             To get started: clone the repo, create accounts for Clerk, Neon, Railway, and Cloudflare

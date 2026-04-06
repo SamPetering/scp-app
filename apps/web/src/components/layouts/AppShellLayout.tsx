@@ -36,29 +36,41 @@ export type NavSection = NavItem & {
   items: NavItem[];
 };
 
+export type ItemSize = 'sm' | 'md';
+
+const itemSizeConfig = {
+  sm: { padding: 'p-2', headerPadding: 'p-2.5', text: 'text-sm', icon: 'size-3' },
+  md: { padding: 'p-3', headerPadding: 'p-3.5', text: 'text-base', icon: 'size-4' },
+};
+
 function NavLink({
   to,
   exact,
   icon,
   label,
   className,
+  itemSize = 'sm',
 }: NavItem & {
   icon?: React.ElementType;
   className?: string;
+  itemSize?: ItemSize;
 }) {
   const Icon = icon ?? 'div';
+  const { padding, text, icon: iconSize } = itemSizeConfig[itemSize];
   return (
     <Link
       to={to}
       activeOptions={{ exact }}
       className={cn(
-        'flex items-center gap-2 rounded-md p-2',
-        'text-sm text-muted-foreground transition-colors',
+        'flex items-center gap-2 rounded-md',
+        padding,
+        text,
+        'text-muted-foreground transition-colors',
         className,
       )}
     >
-      <Icon className="size-3 shrink-0" />
-      <span className="text-sm leading-0">{label}</span>
+      <Icon className={cn(iconSize, 'shrink-0')} />
+      <span className={cn(text, 'leading-0')}>{label}</span>
     </Link>
   );
 }
@@ -74,22 +86,32 @@ function useIsSectionActive(section: NavSection) {
   );
 }
 
-function NavSection({ section, defaultOpen }: { section: NavSection; defaultOpen?: boolean }) {
+function NavSection({
+  section,
+  defaultOpen,
+  itemSize = 'sm',
+}: {
+  section: NavSection;
+  defaultOpen?: boolean;
+  itemSize?: ItemSize;
+}) {
   const expanded = useIsSectionActive(section) || defaultOpen;
+  const { headerPadding } = itemSizeConfig[itemSize];
   return (
     <div
       className={cn(
-        'flex flex-col overflow-hidden rounded-lg hover:bg-sidebar-accent',
+        'flex flex-col rounded-lg hover:bg-sidebar-accent',
         expanded && 'bg-sidebar-accent',
       )}
     >
-      <NavLink {...section} className="p-2.5" />
+      <NavLink {...section} className={headerPadding} itemSize={itemSize} />
       {expanded && (
         <ul className="flex flex-col gap-1 p-1">
           {section.items.map((i) => (
             <NavLink
               key={i.to}
               {...i}
+              itemSize={itemSize}
               className={cn(
                 'hover:bg-card hover:text-foreground',
                 '[&.active]:bg-card [&.active]:font-medium [&.active]:text-foreground',
@@ -137,10 +159,12 @@ function SidebarNav({
   sections,
   collapsed,
   defaultSectionOpen,
+  itemSize = 'sm',
 }: {
   sections: NavSection[];
   collapsed: boolean;
   defaultSectionOpen?: boolean;
+  itemSize?: ItemSize;
 }) {
   return (
     <div className={cn('flex flex-1 flex-col', collapsed ? 'gap-1' : 'gap-2')}>
@@ -148,7 +172,12 @@ function SidebarNav({
         collapsed ? (
           <NavSectionMenu key={section.label} section={section} />
         ) : (
-          <NavSection key={section.label} section={section} defaultOpen={defaultSectionOpen} />
+          <NavSection
+            key={section.label}
+            section={section}
+            defaultOpen={defaultSectionOpen}
+            itemSize={itemSize}
+          />
         ),
       )}
     </div>
@@ -225,12 +254,12 @@ export function AppShellLayout({
             </Tooltip>
           )}
         </div>
-        <SidebarNav sections={navSections} collapsed={collapsed} />
+        <SidebarNav sections={navSections} collapsed={collapsed} itemSize="sm" />
       </aside>
 
       {/* Mobile drawer */}
       <Drawer direction="right" open={mobileOpen} onOpenChange={setMobileOpen}>
-        <DrawerContent className="p-2 data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:rounded-none">
+        <DrawerContent className="p-2 data-vaul-drawer:duration-150! data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:rounded-none">
           <div className="mb-2 flex justify-between">
             <AppIconLink />
             <Button onClick={() => setMobileOpen(false)} variant="ghost" size="icon">
@@ -238,16 +267,16 @@ export function AppShellLayout({
             </Button>
           </div>
 
-          <SidebarNav sections={navSections} collapsed={false} defaultSectionOpen />
+          <SidebarNav sections={navSections} collapsed={false} defaultSectionOpen itemSize="md" />
 
           <div className="mt-auto border-t pt-2">
             <div className="flex flex-col gap-1">
               <div className="flex flex-col gap-1 border-b pb-1">
                 <UserMenuLabel />
-                <UserMenuProfileItem />
-                <UserMenuToggleThemeItem />
+                <UserMenuProfileItem itemSize="md" />
+                <UserMenuToggleThemeItem itemSize="md" />
               </div>
-              <UserMenuSignOutItem />
+              <UserMenuSignOutItem itemSize="md" />
             </div>
           </div>
         </DrawerContent>
@@ -260,7 +289,7 @@ export function AppShellLayout({
             <AppIconLink />
           </div>
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
             className="ml-auto text-muted-foreground sm:hidden"
             onClick={() => setMobileOpen(true)}
