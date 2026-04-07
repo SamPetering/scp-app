@@ -3,16 +3,8 @@ import { Link } from '@tanstack/react-router';
 import { LogOutIcon, MoonIcon, SunIcon, UserIcon } from 'lucide-react';
 import { Dropdown, DropdownItem, DropdownLabel, DropdownSeparator } from '@/components/Dropdown';
 import { ShortcutBadge } from '@/components/ShortcutBadge';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { useTheme } from '@/hooks/useTheme';
-import { cn } from '@/lib/utils';
-
-type ItemSize = 'sm' | 'md';
-
-const itemSizeConfig = {
-  sm: { icon: 'size-3.5', text: 'text-sm', padding: '' },
-  md: { icon: 'size-4', text: 'text-base', padding: 'py-2.5' },
-};
 
 export function UserMenuLabel() {
   const { user } = useUser();
@@ -26,57 +18,11 @@ export function UserMenuLabel() {
   );
 }
 
-export function UserMenuToggleThemeItem({ itemSize = 'sm' }: { itemSize?: ItemSize }) {
-  const { dark, toggle } = useTheme();
-  const Icon = dark ? SunIcon : MoonIcon;
-  const { icon, text, padding } = itemSizeConfig[itemSize];
-  return (
-    <Button
-      variant="ghost"
-      className={cn('w-full items-center justify-start font-normal', text, padding)}
-      onClick={toggle}
-    >
-      <Icon className={icon} />
-      <span>toggle theme</span>
-      <ShortcutBadge className="-mr-1 ml-auto hidden sm:inline-flex" hotkey="toggleTheme" />
-    </Button>
-  );
-}
-
-export function UserMenuProfileItem({ itemSize = 'sm' }: { itemSize?: ItemSize }) {
-  const { icon, text, padding } = itemSizeConfig[itemSize];
-  return (
-    <Link
-      to="/profile"
-      className={cn(
-        buttonVariants({ variant: 'ghost', className: 'w-full justify-start font-normal' }),
-        text,
-        padding,
-      )}
-    >
-      <UserIcon className={icon} />
-      profile
-    </Link>
-  );
-}
-
-export function UserMenuSignOutItem({ itemSize = 'sm' }: { itemSize?: ItemSize }) {
-  const { signOut } = useClerk();
-  const { icon, text, padding } = itemSizeConfig[itemSize];
-  return (
-    <Button
-      variant="ghost"
-      className={cn('w-full justify-start font-normal', text, padding)}
-      onClick={() => signOut()}
-    >
-      <LogOutIcon className={icon} />
-      sign out
-    </Button>
-  );
-}
-
 export function UserButton() {
   const { isSignedIn } = useAuth();
+  const { dark, toggle } = useTheme();
+  const { signOut } = useClerk();
+  const Icon = dark ? SunIcon : MoonIcon;
 
   if (!isSignedIn) {
     return (
@@ -101,14 +47,20 @@ export function UserButton() {
       </DropdownLabel>
       <DropdownSeparator />
       <DropdownItem asChild>
-        <UserMenuProfileItem />
+        <Link to="/profile">
+          <UserIcon className="size-3" />
+          profile
+        </Link>
       </DropdownItem>
-      <DropdownItem asChild>
-        <UserMenuToggleThemeItem />
+      <DropdownItem onSelect={(e) => { e.preventDefault(); toggle(); }}>
+        <Icon className="size-3" />
+        toggle theme
+        <ShortcutBadge className="-mr-1 ml-auto hidden sm:inline-flex" hotkey="toggleTheme" />
       </DropdownItem>
       <DropdownSeparator />
-      <DropdownItem asChild>
-        <UserMenuSignOutItem />
+      <DropdownItem onSelect={() => signOut()}>
+        <LogOutIcon className="size-3" />
+        sign out
       </DropdownItem>
     </Dropdown>
   );

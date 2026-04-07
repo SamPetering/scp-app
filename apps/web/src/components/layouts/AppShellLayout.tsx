@@ -1,8 +1,17 @@
-import { useAuth } from '@clerk/react';
+import { useAuth, useClerk } from '@clerk/react';
 import { Link, useRouterState } from '@tanstack/react-router';
-import { MenuIcon, PanelLeftIcon, XIcon } from 'lucide-react';
+import {
+  LogOutIcon,
+  MenuIcon,
+  MoonIcon,
+  PanelLeftIcon,
+  SunIcon,
+  UserIcon,
+  XIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { AppIcon } from '@/components/AppIcon';
+import { ShortcutBadge } from '@/components/ShortcutBadge';
 import { Tooltip } from '@/components/Tooltip';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
@@ -11,18 +20,60 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  UserButton,
-  UserMenuLabel,
-  UserMenuProfileItem,
-  UserMenuSignOutItem,
-  UserMenuToggleThemeItem,
-} from '@/components/UserButton';
+import { UserButton, UserMenuLabel } from '@/components/UserButton';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 import { PageLayout } from './PageLayout';
+
+function ProfileLink() {
+  return (
+    <Link
+      to="/profile"
+      className={buttonVariants({
+        variant: 'ghost',
+        className:
+          'w-full justify-start font-normal hover:bg-card hover:text-foreground dark:hover:bg-card dark:hover:text-foreground',
+      })}
+    >
+      <UserIcon className="size-3" />
+      profile
+    </Link>
+  );
+}
+
+function ThemeButton() {
+  const { dark, toggle } = useTheme();
+  const Icon = dark ? SunIcon : MoonIcon;
+  return (
+    <Button
+      variant="ghost"
+      className="w-full items-center justify-start font-normal hover:bg-card hover:text-foreground dark:hover:bg-card dark:hover:text-foreground"
+      onClick={toggle}
+    >
+      <Icon className="size-3" />
+      <span>toggle theme</span>
+      <ShortcutBadge className="-mr-1 ml-auto hidden sm:inline-flex" hotkey="toggleTheme" />
+    </Button>
+  );
+}
+
+function SignOutButton() {
+  const { signOut } = useClerk();
+  return (
+    <Button
+      variant="ghost"
+      className="w-full justify-start font-normal hover:bg-card hover:text-foreground dark:hover:bg-card dark:hover:text-foreground"
+      onClick={() => signOut()}
+    >
+      <LogOutIcon className="size-3" />
+      sign out
+    </Button>
+  );
+}
 
 export type NavItem = {
   to: string;
@@ -36,41 +87,30 @@ export type NavSection = NavItem & {
   items: NavItem[];
 };
 
-export type ItemSize = 'sm' | 'md';
-
-const itemSizeConfig = {
-  sm: { padding: 'p-2', headerPadding: 'p-2.5', text: 'text-sm', icon: 'size-3' },
-  md: { padding: 'p-3', headerPadding: 'p-3.5', text: 'text-base', icon: 'size-4' },
-};
-
 function NavLink({
   to,
   exact,
   icon,
   label,
   className,
-  itemSize = 'sm',
 }: NavItem & {
   icon?: React.ElementType;
   className?: string;
-  itemSize?: ItemSize;
 }) {
-  const Icon = icon ?? 'div';
-  const { padding, text, icon: iconSize } = itemSizeConfig[itemSize];
+  const Icon = icon ?? 'span';
   return (
     <Link
       to={to}
       activeOptions={{ exact }}
       className={cn(
-        'flex items-center gap-2 rounded-md',
-        padding,
-        text,
+        buttonVariants({ variant: 'ghost', size: 'default' }),
+        'flex h-8 items-center justify-start gap-2 rounded-md text-sm',
         'text-muted-foreground transition-colors',
         className,
       )}
     >
-      <Icon className={cn(iconSize, 'shrink-0')} />
-      <span className={cn(text, 'leading-0')}>{label}</span>
+      <Icon className="size-3 shrink-0" />
+      <span>{label}</span>
     </Link>
   );
 }
@@ -86,17 +126,8 @@ function useIsSectionActive(section: NavSection) {
   );
 }
 
-function NavSection({
-  section,
-  defaultOpen,
-  itemSize = 'sm',
-}: {
-  section: NavSection;
-  defaultOpen?: boolean;
-  itemSize?: ItemSize;
-}) {
+function NavSection({ section, defaultOpen }: { section: NavSection; defaultOpen?: boolean }) {
   const expanded = useIsSectionActive(section) || defaultOpen;
-  const { headerPadding } = itemSizeConfig[itemSize];
   return (
     <div
       className={cn(
@@ -104,18 +135,17 @@ function NavSection({
         expanded && 'bg-sidebar-accent',
       )}
     >
-      <NavLink {...section} className={headerPadding} itemSize={itemSize} />
+      <NavLink
+        className="px-2 hover:text-muted-foreground dark:hover:text-muted-foreground"
+        {...section}
+      />
       {expanded && (
         <ul className="flex flex-col gap-1 p-1">
           {section.items.map((i) => (
             <NavLink
               key={i.to}
               {...i}
-              itemSize={itemSize}
-              className={cn(
-                'hover:bg-card hover:text-foreground',
-                '[&.active]:bg-card [&.active]:font-medium [&.active]:text-foreground',
-              )}
+              className="px-1 hover:bg-card hover:text-foreground dark:hover:bg-card dark:hover:text-foreground [&.active]:bg-card [&.active]:font-medium [&.active]:text-foreground"
             />
           ))}
         </ul>
@@ -159,12 +189,10 @@ function SidebarNav({
   sections,
   collapsed,
   defaultSectionOpen,
-  itemSize = 'sm',
 }: {
   sections: NavSection[];
   collapsed: boolean;
   defaultSectionOpen?: boolean;
-  itemSize?: ItemSize;
 }) {
   return (
     <div className={cn('flex flex-1 flex-col', collapsed ? 'gap-1' : 'gap-2')}>
@@ -172,12 +200,7 @@ function SidebarNav({
         collapsed ? (
           <NavSectionMenu key={section.label} section={section} />
         ) : (
-          <NavSection
-            key={section.label}
-            section={section}
-            defaultOpen={defaultSectionOpen}
-            itemSize={itemSize}
-          />
+          <NavSection key={section.label} section={section} defaultOpen={defaultSectionOpen} />
         ),
       )}
     </div>
@@ -254,29 +277,34 @@ export function AppShellLayout({
             </Tooltip>
           )}
         </div>
-        <SidebarNav sections={navSections} collapsed={collapsed} itemSize="sm" />
+        <SidebarNav sections={navSections} collapsed={collapsed} />
       </aside>
 
       {/* Mobile drawer */}
       <Drawer direction="right" open={mobileOpen} onOpenChange={setMobileOpen}>
-        <DrawerContent className="p-2 data-vaul-drawer:duration-150! data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:rounded-none">
-          <div className="mb-2 flex justify-between">
+        <DrawerContent className="data-vaul-drawer:duration-150! data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:rounded-none">
+          <div className="flex justify-between p-2">
             <AppIconLink />
             <Button onClick={() => setMobileOpen(false)} variant="ghost" size="icon">
               <XIcon className="text-muted-foreground" />
             </Button>
           </div>
 
-          <SidebarNav sections={navSections} collapsed={false} defaultSectionOpen itemSize="md" />
+          <div className="px-2">
+            <SidebarNav sections={navSections} collapsed={false} defaultSectionOpen />
+          </div>
 
-          <div className="mt-auto border-t pt-2">
+          <div className="mt-auto bg-sidebar-accent py-2">
             <div className="flex flex-col gap-1">
-              <div className="flex flex-col gap-1 border-b pb-1">
+              <div className="flex flex-col gap-1 px-1">
                 <UserMenuLabel />
-                <UserMenuProfileItem itemSize="md" />
-                <UserMenuToggleThemeItem itemSize="md" />
+                <ProfileLink />
+                <ThemeButton />
               </div>
-              <UserMenuSignOutItem itemSize="md" />
+              <DropdownMenuSeparator />
+              <div className="px-1">
+                <SignOutButton />
+              </div>
             </div>
           </div>
         </DrawerContent>
@@ -289,7 +317,7 @@ export function AppShellLayout({
             <AppIconLink />
           </div>
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
             className="ml-auto text-muted-foreground sm:hidden"
             onClick={() => setMobileOpen(true)}
