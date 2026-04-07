@@ -52,10 +52,15 @@ export function UserButton() {
           profile
         </Link>
       </DropdownItem>
-      <DropdownItem onSelect={(e) => { e.preventDefault(); toggle(); }}>
+      <DropdownItem
+        onSelect={(e) => {
+          e.preventDefault();
+          toggle();
+        }}
+      >
         <Icon className="size-3" />
         toggle theme
-        <ShortcutBadge className="-mr-1 ml-auto hidden sm:inline-flex" hotkey="toggleTheme" />
+        <ShortcutBadge className="-mr-0.5 ml-auto hidden sm:inline-flex" hotkey="toggleTheme" />
       </DropdownItem>
       <DropdownSeparator />
       <DropdownItem onSelect={() => signOut()}>
