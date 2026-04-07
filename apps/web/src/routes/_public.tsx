@@ -34,7 +34,7 @@ function PublicLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <nav className="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-background p-2">
+      <nav className="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-background px-3 py-2">
         <div className="hidden items-center gap-4 sm:flex">
           {navOptions.map(({ to, label }) => (
             <Link key={to} to={to} className="[&.active]:font-bold">
