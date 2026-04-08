@@ -33,11 +33,13 @@ function ProfileLink() {
   return (
     <Link
       to="/profile"
-      className={buttonVariants({
-        variant: 'ghost',
-        className:
-          'w-full justify-start font-normal hover:bg-card hover:text-foreground dark:hover:bg-card dark:hover:text-foreground',
-      })}
+      className={cn(
+        buttonVariants({
+          variant: 'ghost',
+          className:
+            'w-full justify-start font-normal hover:bg-card hover:text-foreground dark:hover:bg-card dark:hover:text-foreground',
+        }),
+      )}
     >
       <UserIcon className="size-3" />
       profile
