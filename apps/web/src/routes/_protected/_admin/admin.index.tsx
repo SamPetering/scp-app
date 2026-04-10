@@ -58,7 +58,7 @@ function SignupsChart({ users, className }: { users: User[]; className?: string 
     const start = startOfWeek(addWeeks(now, i - 7));
     const end = startOfWeek(addWeeks(now, i - 6));
     return {
-      week: format(start, 'MMM d'),
+      week: format(start, 'M/d'),
       count: users.filter((u) => {
         const d = new Date(u.createdAt);
         return !isBefore(d, start) && isBefore(d, end);
