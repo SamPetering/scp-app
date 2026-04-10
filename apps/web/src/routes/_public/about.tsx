@@ -115,7 +115,7 @@ function About() {
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-lg border bg-muted/40 px-4 py-3 transition-colors hover:bg-muted"
+                    className="cursor-pointer rounded-lg border bg-muted/40 px-4 py-3 transition-colors hover:bg-muted"
                   >
                     <p className="font-medium">{name}</p>
                     <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>
