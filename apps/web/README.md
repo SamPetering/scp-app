@@ -25,7 +25,7 @@ pnpm dev
 | ---------------------------- | ------------------------------------------- |
 | `VITE_CLERK_PUBLISHABLE_KEY` | Clerk publishable key                       |
 | `VITE_API_URL`               | API base URL (e.g. `http://localhost:3000`) |
-| `VITE_SENTRY_DSN`            | Sentry DSN for error reporting (optional)   |
+| `VITE_GLITCHTIP_DSN`         | GlitchTip web project DSN (optional)        |
 
 ## Scripts
 

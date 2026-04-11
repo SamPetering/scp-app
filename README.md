@@ -84,9 +84,9 @@ Neon supports branch-based environments. Use `main` for production and a `dev` b
 2. In the Neon dashboard, create a `dev` branch from `main`.
 3. Copy the connection string for the `dev` branch — you'll use it locally in step 2. The `main` branch connection string is for production in step 4.
 
-**Sentry** _(optional)_
+**GlitchTip** _(optional)_
 
-1. Go to [sentry.io](https://sentry.io) and create a Node.js project and a Browser (React) project.
+1. Go to [glitchtip.com](https://glitchtip.com) and create two projects — one for the API and one for the web.
 2. Copy both DSNs — you'll need them in steps 2 and 4.
 
 ---
@@ -121,7 +121,8 @@ Fill in your env files with **development** values (Clerk dev instance, Neon dev
 | `CLERK_SECRET_KEY`      | Clerk dev secret key (`sk_test_...`)      |
 | `CLERK_WEBHOOK_SECRET`  | Leave blank for now — see step 5          |
 | `DATABASE_URL`          | Neon `dev` branch connection string       |
-| `SENTRY_DSN`            | Sentry Node.js DSN _(optional)_           |
+| `GLITCHTIP_DSN`         | GlitchTip API project DSN _(optional)_    |
+| `WEB_GLITCHTIP_DSN`     | GlitchTip web project DSN _(optional)_    |
 
 **`apps/web/.env`**
 
@@ -129,7 +130,7 @@ Fill in your env files with **development** values (Clerk dev instance, Neon dev
 | ---------------------------- | ----------------------------------------- |
 | `VITE_CLERK_PUBLISHABLE_KEY` | Clerk dev publishable key (`pk_test_...`) |
 | `VITE_API_URL`               | `http://localhost:3000`                   |
-| `VITE_SENTRY_DSN`            | Sentry browser DSN _(optional)_           |
+| `VITE_GLITCHTIP_DSN`         | GlitchTip web project DSN _(optional)_    |
 
 Then run:
 
@@ -185,7 +186,8 @@ Then restart the API.
    | `CLERK_SECRET_KEY`      | `sk_live_...`                        |
    | `CLERK_WEBHOOK_SECRET`  | Leave blank for now — see step 3     |
    | `DATABASE_URL`          | Neon `main` branch connection string |
-   | `SENTRY_DSN`            | Sentry Node.js DSN _(optional)_      |
+   | `GLITCHTIP_DSN`         | GlitchTip API project DSN _(optional)_    |
+   | `WEB_GLITCHTIP_DSN`     | GlitchTip web project DSN _(optional)_    |
 
    > Railway injects `PORT` automatically — do not add it manually.
 

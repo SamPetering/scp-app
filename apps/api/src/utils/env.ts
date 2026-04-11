@@ -6,7 +6,7 @@ export function getEnvironment() {
       ? 'staging'
       : process.env.NODE_ENV === 'test'
         ? 'test'
-        : 'dev';
+        : 'development';
 }
 
 console.log('NODE_ENV: ', getEnvironment());
@@ -18,7 +18,8 @@ type VariableKey =
   | 'CLERK_SECRET_KEY'
   | 'CLERK_WEBHOOK_SECRET'
   | 'DATABASE_URL'
-  | 'SENTRY_DSN';
+  | 'GLITCHTIP_DSN'
+  | 'WEB_GLITCHTIP_DSN';
 export function getVariable(key: VariableKey) {
   const v = process.env[key];
   if (v == null || v.trim() === '') console.warn(`Missing environment variable: ${key}`);

@@ -7,7 +7,7 @@ const STAGING_ORIGINS: string[] = [];
 
 const getOrigins = () => {
   const env = getEnvironment();
-  if (env === 'dev') return true;
+  if (env === 'development') return true;
   if (env === 'staging') return STAGING_ORIGINS;
   if (env === 'production') return PROD_ORIGINS;
   return [];

@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/node';
 import { getEnvironment, getVariable } from './utils/env.js';
 
-const dsn = getVariable('SENTRY_DSN');
+const dsn = getVariable('GLITCHTIP_DSN');
 
 if (dsn) {
   Sentry.init({

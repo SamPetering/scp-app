@@ -27,7 +27,8 @@ pnpm dev
 | `CLERK_SECRET_KEY`      | Clerk secret key                                       |
 | `CLERK_WEBHOOK_SECRET`  | Clerk webhook signing secret                           |
 | `DATABASE_URL`          | Neon database connection string                        |
-| `SENTRY_DSN`            | Sentry DSN for error reporting                         |
+| `GLITCHTIP_DSN`         | GlitchTip API project DSN for error reporting (optional) |
+| `WEB_GLITCHTIP_DSN`     | GlitchTip web project DSN — used by the browser tunnel (optional) |
 
 ## Scripts
 
@@ -58,4 +59,6 @@ Railway injects `PORT` automatically. `HOST` must be set to `0.0.0.0` in the Rai
 
 ## Error reporting
 
-Errors are sent to Sentry via `@sentry/node`. Sentry is initialized in `src/instrument.ts` before the server starts.
+Errors are sent to GlitchTip via `@sentry/node` (GlitchTip is Sentry-protocol compatible). Initialized in `src/instrument.ts` before the server starts.
+
+Browser errors from the web app are proxied through `POST /tunnel` to bypass ad blockers. The tunnel validates the incoming DSN against `WEB_GLITCHTIP_DSN` before forwarding.

@@ -79,6 +79,11 @@ const PLATFORM: { name: string; description: string; href: string }[] = [
     description: 'API deployment via a simple toml config',
     href: 'https://railway.app/',
   },
+  {
+    name: 'GlitchTip',
+    description: 'Open-source error monitoring, Sentry-protocol compatible',
+    href: 'https://glitchtip.com/',
+  },
 ];
 
 const SECTIONS = [
