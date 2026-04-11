@@ -284,7 +284,7 @@ export function AppShellLayout({
 
       {/* Mobile drawer */}
       <Drawer direction="right" open={mobileOpen} onOpenChange={setMobileOpen}>
-        <DrawerContent className="data-vaul-drawer:duration-150! data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:rounded-none">
+        <DrawerContent className="data-[vaul-drawer-direction=right]:rounded-none">
           <div className="flex justify-between p-2">
             <AppIconLink />
             <Button onClick={() => setMobileOpen(false)} variant="ghost" size="icon">
