@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// oxlint-disable no-console
 // Run once after cloning: node scripts/init.js
 import { execSync } from 'child_process';
 import * as fs from 'fs';
@@ -100,11 +101,11 @@ const SCAFFOLD_URL = 'https://github.com/SamPetering/scp-app';
 function getTemplates(name) {
   return [
     {
-      relPath: 'apps/web/src/routes/index.tsx',
+      relPath: 'apps/web/src/routes/_public/index.tsx',
       content: `import { createFileRoute } from '@tanstack/react-router';
-import { PageLayout } from '@/components/PageLayout';
+import { PageLayout } from '@/components/layouts/PageLayout';
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/_public/')({
   component: Index,
 });
 
@@ -118,11 +119,11 @@ function Index() {
 `,
     },
     {
-      relPath: 'apps/web/src/routes/about.tsx',
+      relPath: 'apps/web/src/routes/_public/about.tsx',
       content: `import { createFileRoute } from '@tanstack/react-router';
-import { PageLayout } from '@/components/PageLayout';
+import { PageLayout } from '@/components/layouts/PageLayout';
 
-export const Route = createFileRoute('/about')({
+export const Route = createFileRoute('/_public/about')({
   component: About,
 });
 
@@ -136,11 +137,11 @@ function About() {
 `,
     },
     {
-      relPath: 'apps/web/src/routes/tos.tsx',
+      relPath: 'apps/web/src/routes/_public/tos.tsx',
       content: `import { createFileRoute } from '@tanstack/react-router';
-import { PageLayout } from '@/components/PageLayout';
+import { PageLayout } from '@/components/layouts/PageLayout';
 
-export const Route = createFileRoute('/tos')({
+export const Route = createFileRoute('/_public/tos')({
   component: Tos,
 });
 
@@ -156,11 +157,11 @@ function Tos() {
 `,
     },
     {
-      relPath: 'apps/web/src/routes/privacy.tsx',
+      relPath: 'apps/web/src/routes/_public/privacy.tsx',
       content: `import { createFileRoute } from '@tanstack/react-router';
-import { PageLayout } from '@/components/PageLayout';
+import { PageLayout } from '@/components/layouts/PageLayout';
 
-export const Route = createFileRoute('/privacy')({
+export const Route = createFileRoute('/_public/privacy')({
   component: Privacy,
 });
 
@@ -173,6 +174,32 @@ function Privacy() {
     </PageLayout>
   );
 }
+`,
+    },
+    {
+      relPath: 'apps/api/src/plugins/cors.ts',
+      content: `import cors from '@fastify/cors';
+import fp from 'fastify-plugin';
+import { getEnvironment } from '../utils/env.js';
+
+const PROD_ORIGINS: string[] = []; // add your production frontend domain(s) here, e.g. 'https://your-domain.com'
+const STAGING_ORIGINS: string[] = [];
+
+const getOrigins = () => {
+  const env = getEnvironment();
+  if (env === 'development') return true;
+  if (env === 'staging') return STAGING_ORIGINS;
+  if (env === 'production') return PROD_ORIGINS;
+  return [];
+};
+
+export default fp(async (fastify) => {
+  fastify.register(cors, {
+    origin: getOrigins(),
+    credentials: true,
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  });
+});
 `,
     },
     {

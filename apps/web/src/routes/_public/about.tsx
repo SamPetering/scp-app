@@ -27,7 +27,6 @@ const FRONTEND: { name: string; description: string; href: string }[] = [
     description: 'Copy-paste component primitives that you own',
     href: 'https://ui.shadcn.com/',
   },
-  // todo: fix
   {
     name: 'TanStack',
     description: 'Router, Query, Table, Hotkeys, and Devtools',

@@ -211,6 +211,7 @@ Then restart the API.
    | ---------------------------- | -------------------------------------------------- |
    | `VITE_CLERK_PUBLISHABLE_KEY` | `pk_live_...`                                      |
    | `VITE_API_URL`               | `https://api.your-domain.com` (include `https://`) |
+   | `VITE_GLITCHTIP_DSN`         | GlitchTip web project DSN _(optional)_             |
 
    > These are baked in at build time — a redeploy is required after changing them.
 
